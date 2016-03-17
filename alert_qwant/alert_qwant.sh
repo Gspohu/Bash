@@ -63,6 +63,7 @@ then
 			mv /tmp/alert_qwant.sh /srv/scripts/alert_qwant.sh
 			echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
 		else
+			rm /tmp/alert_qwant.sh
 			echo "Aucune mise à jour disponible" >> /srv/scripts/alert_qwant.log
 		fi
         elif [ $1 = "--dmail" ]
