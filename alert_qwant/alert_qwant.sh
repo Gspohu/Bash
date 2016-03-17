@@ -61,7 +61,8 @@ then
         elif [ $1 = "--dmail" ]
 	then
 		rm BDD_veille.mail
-		echo "La base de donné de liens envoyés par mail à été supprimé" >> /srv/scripts/alert_qwant.log
+		echo "La base de donné de liens envoyés par mail à été vidé" >> /srv/scripts/alert_qwant.log
+		echo 'Historique des liens envoyé par mail' >> /srv/scripts/BDD_veille.mail
 	else
                 echo 'Erreur : Option non reconnue'
         fi
