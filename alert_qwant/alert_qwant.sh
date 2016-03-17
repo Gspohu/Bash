@@ -33,7 +33,7 @@ then
         echo "Nombre de liens récupéré par mot clef : 4" >> /srv/scripts/alert_qwant.conf
         echo "Nombre de liens envoyé par mail : 50" >> /srv/scripts/alert_qwant.conf
         echo "Adresse mail : adresse@mail.eu" >> /srv/scripts/alert_qwant.conf
-        echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail" >> /srv/scripts/alert_qwant.log
+        echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail." >> /srv/scripts/alert_qwant.log
 fi
 
 if [ ! -f "/srv/scripts/Mots_clefs.list" ] # Test de la présence de la liste des mots clefs 
