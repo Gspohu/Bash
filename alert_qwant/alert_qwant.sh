@@ -55,9 +55,17 @@ then
 	#Option de mise à jour
         if [ $1 = "--upgrade" ]
         then
-		rm /srv/scripts/alert_qwant.sh
-                wget -q -P /srv/scripts/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
-                echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
+                wget -q -P /srv/scripts/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh.tmp
+                diff_maj=$(diff alert_qwant.sh.tmp alert_qwant.sh)
+		if [ "$diff_maj" != "" ]
+		then
+			rm /srv/scripts/alert_qwant.sh
+			mv /srv/scripts/alert_qwant.sh.tmp /srv/scripts/alert_qwant.sh
+			echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
+		else
+			echo "Aucune mise à jour disponible" >> /srv/scripts/alert_qwant.log
+		fi
+		echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
         elif [ $1 = "--dmail" ]
 	then
 		rm BDD_veille.mail
