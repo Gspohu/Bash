@@ -65,7 +65,6 @@ then
 		else
 			echo "Aucune mise à jour disponible" >> /srv/scripts/alert_qwant.log
 		fi
-		echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
         elif [ $1 = "--dmail" ]
 	then
 		rm BDD_veille.mail
