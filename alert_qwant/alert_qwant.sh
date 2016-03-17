@@ -50,7 +50,7 @@ fi
 echo "Lancement alert_qwant.sh le $jour_heure :" >> /srv/scripts/alert_qwant.log
 
 #Lecture des options
-if [ $# -eq 1 ]
+if [ $# -ge 1 ]
 then
 	#Option de mise à jour
         if [ $1 = "--upgrade" ]
@@ -58,7 +58,11 @@ then
 		rm /srv/scripts/alert_qwant.sh
                 wget -q -P /srv/scripts/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
                 echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
-        else
+        elif [ $1 = "--dmail"]
+	then
+		rm BDD_veille.mail
+		echo "La base de donné de liens envoyés par mail à été supprimé" >> /srv/scripts/alert_qwant.log
+	else
                 echo 'Erreur : Option non reconnue'
         fi
 fi
