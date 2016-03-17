@@ -56,7 +56,7 @@ then
         if [ $1 = "--upgrade" ]
         then
                 wget -q -P /tmp/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
-                echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour :" >> /srv/scripts/alert_qwant.log
+                echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
                 rm /srv/scripts/alert_qwant.sh
                 cp /tmp/alert_qwant.sh /srv/scripts/
                 rm /tmp/alert_qwant.sh
