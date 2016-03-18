@@ -141,19 +141,23 @@ fi
 cat /srv/scripts/BDD_veille.data | while read line
 do
        	((nbline++))
-
-        #Test pour le nombre maximum de lien
-        if [ $nbline -ge $nbliens_par_mail ]
-        then
-               	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.data
-		cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail 
-                rm /srv/scripts/BDD_veille.data
-		echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
-		echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
-		exit 0
-	fi
-echo "Le fichier de base de donnée de veille contient $nbline liens" > /srv/scripts/alert_qwant.log.tmp
+	echo "$nbline" > /srv/scripts/nbline.tmp
+	echo "Le fichier de base de donnée de veille contient $nbline liens" > /srv/scripts/alert_qwant.log.tmp
 done
+
+#Test pour le nombre maximum de lien
+nbline=$(cat /srv/scripts/nbline.tmp)
+rm /srv/scripts/nbline.tmp
+if [ $nbline -ge $nbliens_par_mail ]
+then
+	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.data
+        cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
+        rm /srv/scripts/BDD_veille.data
+        echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
+        echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+        exit 0
+fi
+
 cat /srv/scripts/alert_qwant.log.tmp >> /srv/scripts/alert_qwant.log
 rm /srv/scripts/alert_qwant.log.tmp
 echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
