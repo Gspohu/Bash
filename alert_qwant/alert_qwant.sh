@@ -40,7 +40,7 @@ if [ ! -f "/srv/scripts/Mots_clefs.list" ] # Test de la présence de la liste de
 then
         echo 'Qwant' >> /srv/scripts/Mots_clefs.list
         echo 'Erreur : Votre liste de mots clefs est vide et a été créé automatiquement. Pensez à éditer le fichier Mots_clefs.list' >> /srv/scripts/alert_qwant.log
-elif [ ! -f "/srv/scripts/BDD_veille.mail" ] # Test de la présence de la BDD des mail envoyé
+elif [ ! -f "/srv/scripts/BDD_veille.mail" ] # Test de la présence de la BDD des mails envoyés
 then
         echo 'Historique des liens envoyé par mail' >> /srv/scripts/BDD_veille.mail
         echo "Le fichier de base de donnée de liens envoyé par mail a été créé" >> /srv/scripts/alert_qwant.log
