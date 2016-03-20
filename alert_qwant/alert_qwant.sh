@@ -32,7 +32,8 @@ then
         echo "Fréquence de lancement de alert_qwant par jour (Divisé par le nombre d'heure par jour doit être entier) : 12" >> /srv/scripts/alert_qwant.conf
         echo "Nombre de liens récupéré par mot clef : 4" >> /srv/scripts/alert_qwant.conf
         echo "Nombre de liens envoyé par mail : 50" >> /srv/scripts/alert_qwant.conf
-        echo "Adresse mail : adresse@mail.eu" >> /srv/scripts/alert_qwant.conf
+        echo "Une fois les liens récupérés, les envoyers par mail (taper : mail) ou les envoyers dans un fichier (taper : le/lien/absolu/du/fichier) :" >> /srv/scripts/alert_qwant.conf
+	echo "Adresse mail : adresse@mail.eu" >> /srv/scripts/alert_qwant.conf
         echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail." >> /srv/scripts/alert_qwant.log
 fi
 
