@@ -159,6 +159,7 @@ then
         rm /srv/scripts/BDD_veille.data
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+	echo " " >> /srv/scripts/alert_qwant.log
         exit 0
 fi
 
