@@ -123,7 +123,7 @@ then
 fi
 
 #Suppression des espaces dans le fichier contenant les mots clefs
-cat Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.list
+cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.list
 
 #Lecture du fichier de configuration
 freq=$(cat /srv/scripts/alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
