@@ -6,7 +6,7 @@ indice="news-content" #Repère pour la div ou se trouve les résultats de la rec
 verif_installation=$(dpkg -s $install | grep Status) #Vérification que curl est installé
 nbline=0
 jour_heure=$(date +%d/%m/%y' à '%kh%M)
-cpt=1
+cpt=0
 
 #Lecture des options
 if [ $# -ge 1 ]
