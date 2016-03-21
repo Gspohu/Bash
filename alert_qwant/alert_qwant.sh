@@ -129,6 +129,9 @@ fi
 #Suppression des espaces dans le fichier contenant les mots clefs
 cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.tmp
 
+#Création de BDD_veille.data pour permettre la comparaison entre les liens des différents mots clefs
+echo "" > BDD_veille.data
+
 #Lecture du fichier de configuration
 freq=$(cat /srv/scripts/alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 nbliens_mots_clefs=$(cat /srv/scripts/alert_qwant.conf | grep -o "Nombre de liens récupéré".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
@@ -166,16 +169,12 @@ then
 		fi
 
         	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news" #Lien du moteur de recherche
-        	curl -s $moteur | grep -A 3 $indice | grep -o http[^\"]* | head -n $nbliens_mots_clefs | sed s/' '/'\n '/g >> /srv/scripts/BDD_veille.data #Récupération des liens sur le moteur
-		curl -s $moteur | grep -A 3 $indice | grep -o http[^\"]* | head -n $nbliens_mots_clefs | sed s/' '/'\n '/g >> /srv/scripts/$mots_clefs.tmp
+		curl -s $moteur | grep -A 3 $indice | grep -o http[^\"]* | head -n $nbliens_mots_clefs | sed s/' '/'\n '/g >> /srv/scripts/$mots_clefs.tmp #Récupération des liens sur le moteur de recherche
 
 		#Vérification des doublons
-        	cat /srv/scripts/BDD_veille.data | sort | uniq > /srv/scripts/BDD_veille.tmp
-        	rm /srv/scripts/BDD_veille.data
-        	mv /srv/scripts/BDD_veille.tmp /srv/scripts/BDD_veille.data
-		#Nouveau système
 		cat /srv/scripts/$mots_clefs.tmp | sort > /srv/scripts/tmp
 		cat /srv/scripts/BDD_veille.mail | sort >> /srv/scripts/tmp
+		cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/tmp
 		cat /srv/scripts/tmp | sort | uniq -d > /srv/scripts/tmp.tmp
 	        rm /srv/scripts/tmp
  		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/tmp.tmp
@@ -183,7 +182,7 @@ then
 	        rm /srv/scripts/tmp.tmp
 		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/$mots_clefs.data
 		rm /srv/scripts/$mots_clefs.tmp
-
+		cat /srv/scripts/$mots_clefs >> BDD_veille.data
 	done
 	#Suppression des doublons entre les mails déjà envoyé et la BDD
         cat /srv/scripts/BDD_veille.data | sort > /srv/scripts/tmp
