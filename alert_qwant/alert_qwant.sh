@@ -158,14 +158,32 @@ then
 	#Boucle pour rechercher les liens pour chaque mot clef
 	cat /srv/scripts/Mots_clefs.tmp | while read line #Lecture ligne par ligne
 	do
-        	mots_clef=$line
-        	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clef&t=news" #Lien du moteur de recherche
+        	mots_clefs=$line
+		#Inscription de l'entête
+		if [ ! -f "/srv/scripts/$mot_clef.data" ]
+		then
+			 echo "$mots_clefs" > /srv/scripts/$mots_clefs.data
+		fi
+
+        	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news" #Lien du moteur de recherche
         	curl -s $moteur | grep -A 3 $indice | grep -o http[^\"]* | head -n $nbliens_mots_clefs | sed s/' '/'\n '/g >> /srv/scripts/BDD_veille.data #Récupération des liens sur le moteur
+		curl -s $moteur | grep -A 3 $indice | grep -o http[^\"]* | head -n $nbliens_mots_clefs | sed s/' '/'\n '/g >> /srv/scripts/$mots_clefs.tmp
 
 		#Vérification des doublons
         	cat /srv/scripts/BDD_veille.data | sort | uniq > /srv/scripts/BDD_veille.tmp
         	rm /srv/scripts/BDD_veille.data
         	mv /srv/scripts/BDD_veille.tmp /srv/scripts/BDD_veille.data
+		#Nouveau système
+		cat /srv/scripts/$mots_clefs.tmp | sort > /srv/scripts/tmp
+		cat /srv/scripts/BDD_veille.mail | sort >> /srv/scripts/tmp
+		cat /srv/scripts/tmp | sort | uniq -d > /srv/scripts/tmp.tmp
+	        rm /srv/scripts/tmp
+ 		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/tmp.tmp
+        	cat /srv/scripts/tmp.tmp | sort | uniq -u > /srv/scripts/$mots_clefs.tmp
+	        rm /srv/scripts/tmp.tmp
+		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/$mots_clefs.data
+		rm /srv/scripts/$mots_clefs.tmp
+
 	done
 	#Suppression des doublons entre les mails déjà envoyé et la BDD
         cat /srv/scripts/BDD_veille.data | sort > /srv/scripts/tmp
@@ -197,13 +215,10 @@ rm /srv/scripts/nbline.tmp
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
 then
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
-	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de création des catégories
+	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
-		echo "<b>$line<b>" >> /srv/scripts/BDD_veille.mef
-		cat /srv/scripts/BDD_veille.data | grep $line | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef #Triage des liens
-		cat /srv/scripts/BDD_veille.data | grep -v $line > /srv/scripts/BDD_veille.data
+		cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
 	done
-	echo "<b>Inclassable<b>" >> /srv/scripts/BDD_veille.mef
 	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef
 	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.mef
         rm /srv/scripts/BDD_veille.data /srv/scripts/BDD_veille.mef
