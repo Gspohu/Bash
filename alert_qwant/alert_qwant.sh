@@ -11,7 +11,7 @@ cpt=1
 #Lecture des options
 if [ $# -ge 1 ]
 then
-	while  [ $cpt -le $# ]#Boucle de lecture des options
+	while [ $cpt -le $# ] #Boucle de lecture des options
 	do
 	((cpt++))
 		#Option de mise à jour
