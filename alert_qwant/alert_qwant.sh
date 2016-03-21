@@ -46,7 +46,12 @@ then
 		then
 			verbose="Activé"
 			if [ "$verbose" = "Activé" ]; then echo "Option verbose activé"; fi
-                        echo 'Option verbose activé' >> /srv/scripts/alert_qwant.log
+                        echo "Option verbose activé" >> /srv/scripts/alert_qwant.log
+		elif [ $1 = "--mail" ]
+		then
+			mail="Activé"
+			echo "Option envoi de mail sans taille limite activé" >> /srv/scripts/alert_qwant.log
+			if [ "$verbose" = "Activé" ]; then echo "Option envoi de mail sans taille limite activé"; fi
 		else
                 	if [ "$verbose" = "Activé" ]; then echo "Erreur : Option non reconnue"; fi
 			echo 'Erreur : Option non reconnue' >> /srv/scripts/alert_qwant.log
@@ -182,7 +187,7 @@ done
 #Test pour le nombre maximum de lien
 nbline=$(cat /srv/scripts/nbline.tmp)
 rm /srv/scripts/nbline.tmp
-if [ $nbline -ge $nbliens_par_mail ]
+if [ $nbline -ge $nbliens_par_mail || "$mail" = "Activé" ]
 then
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
 	cat /srv/scripts/Mots_clefs.list | while read line # Boucle de création des catégories
