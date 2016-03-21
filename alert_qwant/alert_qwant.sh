@@ -162,7 +162,7 @@ then
 		#Inscription de l'entête
 		if [ ! -f "/srv/scripts/$mot_clef.data" ]
 		then
-			 echo "$mots_clefs" > /srv/scripts/$mots_clefs.data
+			 echo "$mots_clefs" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
 		fi
 
         	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news" #Lien du moteur de recherche
@@ -218,6 +218,7 @@ then
 	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
 		cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
+		echo "" >> /srv/scripts/BDD_veille.mef
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef
 	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.mef
