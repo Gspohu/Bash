@@ -184,11 +184,17 @@ nbline=$(cat /srv/scripts/nbline.tmp)
 rm /srv/scripts/nbline.tmp
 if [ $nbline -ge $nbliens_par_mail ]
 then
-	cat /srv/scripts/BDD_veille.data | sed s/'http'/'\nhttp'/g  > /srv/scripts/BDD_veille.mef
+	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
+	cat /srv/scripts/Mots_clefs.list | while read line # Boucle de création des catégories
+	do
+		echo "<b>$line<b>" >> /srv/scripts/BDD_veille.mef
+		cat /srv/scripts/BDD_veille.data | grep $line | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef #Triage des liens
+		cat /srv/scripts/BDD_veille.data | grep -v $line > /srv/scripts/BDD_veille.data
+	done
+	echo "<b>Inclassable<b>" >> /srv/scripts/BDD_veille.mef
+	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef
 	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.mef
-        cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
-        rm /srv/scripts/BDD_veille.data
-	rm /srv/scripts/BDD_veille.mef
+        rm /srv/scripts/BDD_veille.data /srv/scripts/BDD_veille.mef
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
