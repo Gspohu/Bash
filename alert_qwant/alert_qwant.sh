@@ -122,6 +122,9 @@ then
 	if [ "$verbose" = "Activé" ]; then echo "Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant"; fi
 fi
 
+#Suppression des espaces dans le fichier contenant les mots clefs
+cat Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.list
+
 #Lecture du fichier de configuration
 freq=$(cat /srv/scripts/alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 nbliens_mots_clefs=$(cat /srv/scripts/alert_qwant.conf | grep -o "Nombre de liens récupéré".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
