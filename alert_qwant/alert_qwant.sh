@@ -123,7 +123,7 @@ then
 fi
 
 #Suppression des espaces dans le fichier contenant les mots clefs
-cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.list
+cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.tmp
 
 #Lecture du fichier de configuration
 freq=$(cat /srv/scripts/alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
@@ -152,7 +152,7 @@ fi
 if [ "$verif_installation" = "Status: install ok installed" ] # Test de l'installation de curl
 then
 	#Boucle pour rechercher les liens pour chaque mot clef
-	cat /srv/scripts/Mots_clefs.list | while read line #Lecture ligne par ligne
+	cat /srv/scripts/Mots_clefs.tmp | while read line #Lecture ligne par ligne
 	do
         	mots_clef=$line
         	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clef&t=news" #Lien du moteur de recherche
@@ -193,7 +193,7 @@ rm /srv/scripts/nbline.tmp
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
 then
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
-	cat /srv/scripts/Mots_clefs.list | while read line # Boucle de création des catégories
+	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de création des catégories
 	do
 		echo "<b>$line<b>" >> /srv/scripts/BDD_veille.mef
 		cat /srv/scripts/BDD_veille.data | grep $line | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef #Triage des liens
