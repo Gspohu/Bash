@@ -187,7 +187,7 @@ done
 #Test pour le nombre maximum de lien
 nbline=$(cat /srv/scripts/nbline.tmp)
 rm /srv/scripts/nbline.tmp
-if [ $nbline -ge $nbliens_par_mail || "$mail" = "Activé" ]
+if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
 then
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
 	cat /srv/scripts/Mots_clefs.list | while read line # Boucle de création des catégories
