@@ -222,7 +222,7 @@ then
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef
 	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.mef
-        rm /srv/scripts/BDD_veille.data /srv/scripts/BDD_veille.mef
+        rm /srv/scripts/BDD_veille.mef *.data
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
