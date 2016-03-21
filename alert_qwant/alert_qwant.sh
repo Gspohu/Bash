@@ -184,14 +184,6 @@ then
 		cat /srv/scripts/$mots_clefs.tmp >> BDD_veille.data
 		rm /srv/scripts/$mots_clefs.tmp
 	done
-	#Suppression des doublons entre les mails déjà envoyé et la BDD
-        cat /srv/scripts/BDD_veille.data | sort > /srv/scripts/tmp
-        cat /srv/scripts/BDD_veille.mail | sort >> /srv/scripts/tmp
-        cat /srv/scripts/tmp | sort | uniq -d > /srv/scripts/tmp.tmp
-        rm /srv/scripts/tmp
-        cat /srv/scripts/BDD_veille.data >> /srv/scripts/tmp.tmp
-        cat /srv/scripts/tmp.tmp | sort | uniq -u > /srv/scripts/BDD_veille.data
-        rm /srv/scripts/tmp.tmp
 else
 	apt-get install $install #installation de curl
 	echo "Le logiciel $install a été installé" >> /srv/scripts/alert_qwant.log
