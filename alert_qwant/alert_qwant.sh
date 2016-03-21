@@ -25,6 +25,10 @@ then
 				mv /tmp/alert_qwant.sh /srv/scripts/alert_qwant.sh
 				echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour "; fi
+				echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+				if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+				echo " " >> /srv/scripts/alert_qwant.log		
+				exit 0
 			else
 				rm /tmp/alert_qwant.sh
 				echo "Aucune mise à jour disponible" >> /srv/scripts/alert_qwant.log
