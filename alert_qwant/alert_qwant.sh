@@ -209,6 +209,7 @@ then
 fi
 
 cat /srv/scripts/alert_qwant.log.tmp >> /srv/scripts/alert_qwant.log
+if [ "$verbose" = "Activé" ]; then cat /srv/scripts/alert_qwant.log.tmp; fi
 rm /srv/scripts/alert_qwant.log.tmp
 echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
