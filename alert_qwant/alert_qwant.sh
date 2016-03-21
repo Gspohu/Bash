@@ -181,8 +181,8 @@ then
         	cat /srv/scripts/tmp.tmp | sort | uniq -u > /srv/scripts/$mots_clefs.tmp
 	        rm /srv/scripts/tmp.tmp
 		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/$mots_clefs.data
+		cat /srv/scripts/$mots_clefs.tmp >> BDD_veille.data
 		rm /srv/scripts/$mots_clefs.tmp
-		cat /srv/scripts/$mots_clefs >> BDD_veille.data
 	done
 	#Suppression des doublons entre les mails déjà envoyé et la BDD
         cat /srv/scripts/BDD_veille.data | sort > /srv/scripts/tmp
