@@ -225,8 +225,7 @@ then
 		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
         elif [ "$choix_mail_ou_fichier" = "fichier" ]
 	then
-		ladate=$(date +%d/%m/%y)
-		cat /srv/scripts/BDD_veille.mef > $chemin_fichier/Newsletter_du_$ladate.html
+		cat /srv/scripts/BDD_veille.mef > $chemin_fichier/Newsletter.html
 	else
 		echo "Choix mail ou fichier argument invalide" >> /srv/scripts/alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
