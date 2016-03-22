@@ -101,7 +101,7 @@ then
         echo "Une fois les liens récupérés, les envoyers par mail (tapez : mail) ou les envoyers dans un fichier (tapez : le/lien/absolu/du/fichier) :" >> /srv/scripts/alert_qwant.conf
         echo "Adresse mail : adresse@mail.eu" >> /srv/scripts/alert_qwant.conf
 	echo "Chemin absolu du fichier :" >> /srv/scripts/alert_qwant.conf
-	echo "Envoyer les liens par mail (érivez mail) ou dans un fichier (écrivez fichier) ?" >> /srv/scripts/alert_qwant.conf
+	echo "Envoyer les liens par mail (érivez mail) ou dans un fichier (écrivez fichier) :" >> /srv/scripts/alert_qwant.conf
         echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail." >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail."; fi
 fi
