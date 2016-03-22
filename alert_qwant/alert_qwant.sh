@@ -200,7 +200,6 @@ cat /srv/scripts/BDD_veille.data | while read line
 do
        	((nbline++))
 	echo "$nbline" > /srv/scripts/nbline.tmp
-	echo "Le fichier de base de donnée de veille contient $nbline liens" > /srv/scripts/alert_qwant.log.tmp
 done
 
 #Test pour le nombre maximum de lien
@@ -224,8 +223,8 @@ then
         exit 0
 fi
 
-cat /srv/scripts/alert_qwant.log.tmp >> /srv/scripts/alert_qwant.log
-if [ "$verbose" = "Activé" ]; then cat /srv/scripts/alert_qwant.log.tmp; fi
+echo "Le fichier de base de donnée de veille contient $nbline liens" >> /srv/scripts/alert_qwant.log
+if [ "$verbose" = "Activé" ]; then echo "Le fichier de base de donnée de veille contient $nbline liens"; fi
 rm /srv/scripts/*.tmp
 echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
