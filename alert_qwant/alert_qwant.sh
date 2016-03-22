@@ -33,7 +33,10 @@ then
 				rm /tmp/alert_qwant.sh
 				echo "Aucune mise à jour disponible" >> /srv/scripts/alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Aucune mise à jour disponible"; fi
-
+                                echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+                                if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+                                echo " " >> /srv/scripts/alert_qwant.log
+                                exit 0
 			fi
         	elif [ $1 = "--dmail" ]
 		then
