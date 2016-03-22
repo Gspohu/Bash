@@ -171,7 +171,7 @@ then
 		#Inscription de l'entête
 		if [ ! -f "/srv/scripts/$mots_clefs.data" ]
 		then
-			 echo "$mots_clefs" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
+			 echo "<b>$mots_clefs<b>" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
 		fi
 
         	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news" #Lien du moteur de recherche
@@ -216,7 +216,7 @@ then
 		echo "" >> /srv/scripts/BDD_veille.mef
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g > /srv/scripts/BDD_veille_final.mef
-	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille_final.mef
+	mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille_final.mef
         rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
