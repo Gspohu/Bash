@@ -213,9 +213,9 @@ then
 		cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
 		echo "" >> /srv/scripts/BDD_veille.mef
 	done
-	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef
-	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.mef
-        rm /srv/scripts/BDD_veille.mef *.data *.tmp
+	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g > /srv/scripts/BDD_veille_final.mef
+	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille_final.mef
+        rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
@@ -226,7 +226,7 @@ fi
 
 cat /srv/scripts/alert_qwant.log.tmp >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then cat /srv/scripts/alert_qwant.log.tmp; fi
-rm *.tmp
+rm /srv/scripts/*.tmp
 echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
 echo " " >> /srv/scripts/alert_qwant.log
