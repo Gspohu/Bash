@@ -100,6 +100,8 @@ then
         echo "Nombre de liens envoyé par mail : 50" >> /srv/scripts/alert_qwant.conf
         echo "Une fois les liens récupérés, les envoyers par mail (tapez : mail) ou les envoyers dans un fichier (tapez : le/lien/absolu/du/fichier) :" >> /srv/scripts/alert_qwant.conf
         echo "Adresse mail : adresse@mail.eu" >> /srv/scripts/alert_qwant.conf
+	echo "Chemin absolu du fichier :" >> /srv/scripts/alert_qwant.conf
+	echo "Envoyer les liens par mail (érivez mail) ou dans un fichier (écrivez fichier) ?" >> /srv/scripts/alert_qwant.conf
         echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail." >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail."; fi
 fi
@@ -142,9 +144,10 @@ fi
 freq=$(cat /srv/scripts/alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 nbliens_mots_clefs=$(cat /srv/scripts/alert_qwant.conf | grep -o "Nombre de liens récupéré".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 nbliens_par_mail=$(cat /srv/scripts/alert_qwant.conf | grep -o "Nombre de liens envoyé".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-Choix_mail_ou_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Une fois".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+choix_mail_ou_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Envoyer".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 adresse_mail=$(cat /srv/scripts/alert_qwant.conf | grep -o "Adresse".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 freq_cron=$((24/$freq))
+chemin_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Chemin".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 
 #Mise en place du lancement automatique avec cron
 crontab -l > /tmp/crontab_tmp.tmp
@@ -217,8 +220,18 @@ then
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'\<br\>'/g > /srv/scripts/BDD_veilleMEF.tmp
 	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'http'/'\<br\>http'/g > /srv/scripts/BDD_veille.mef
-	mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
-        rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp
+	if [ "$choix_mail_ou_fichier" = "mail" ]
+	then
+		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
+        elif [ "$choix_mail_ou_fichier" = "fichier" ]
+	then
+		ladate=$(date +%d/%m/%y)
+		cat /srv/scripts/BDD_veille.mef > $chemin_fichier/Newsletter_du_$ladate.html
+	else
+		echo "Choix mail ou fichier argument invalide" >> /srv/scripts/alert_qwant.log
+		if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
+	fi
+	rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
