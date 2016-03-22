@@ -169,7 +169,7 @@ then
 	do
         	mots_clefs=$line
 		#Inscription de l'entête
-		if [ ! -f "/srv/scripts/$mot_clef.data" ]
+		if [ ! -f "/srv/scripts/$mots_clefs.data" ]
 		then
 			 echo "$mots_clefs" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
 		fi
