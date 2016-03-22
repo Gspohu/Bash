@@ -183,8 +183,8 @@ then
  		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/tmp.tmp
         	cat /srv/scripts/tmp.tmp | sort | uniq -u > /srv/scripts/$mots_clefs.tmp
 	        rm /srv/scripts/tmp.tmp
-		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/$mots_clefs.data
-		cat /srv/scripts/$mots_clefs.tmp >> BDD_veille.data
+		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> /srv/scripts/$mots_clefs.data
+		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> BDD_veille.data
 		rm /srv/scripts/$mots_clefs.tmp
 	done
 else
