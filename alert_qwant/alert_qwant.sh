@@ -132,7 +132,7 @@ cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.tmp
 #Création de BDD_veille.data pour permettre la comparaison entre les liens des différents mots clefs
 if [ ! -f "/srv/scripts/BDD_veille.data" ]
 then
-	echo "" > /srv/scripts/BDD_veille.data
+	touch /srv/scripts/BDD_veille.data
 fi
 
 #Lecture du fichier de configuration
