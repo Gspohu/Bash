@@ -130,7 +130,10 @@ fi
 cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.tmp
 
 #Création de BDD_veille.data pour permettre la comparaison entre les liens des différents mots clefs
-echo "" > BDD_veille.data
+if [ ! -f "/srv/scripts/BDD_veille.data" ]
+then
+	echo "" > BDD_veille.data
+fi
 
 #Lecture du fichier de configuration
 freq=$(cat /srv/scripts/alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
@@ -202,7 +205,6 @@ done
 
 #Test pour le nombre maximum de lien
 nbline=$(cat /srv/scripts/nbline.tmp)
-rm /srv/scripts/nbline.tmp
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
 then
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
@@ -213,7 +215,7 @@ then
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'http'/'\nhttp'/g >> /srv/scripts/BDD_veille.mef
 	mail -s "[Alert Qwant] Newsletter de $nbline liens" $adresse_mail < /srv/scripts/BDD_veille.mef
-        rm /srv/scripts/BDD_veille.mef *.data
+        rm /srv/scripts/BDD_veille.mef *.data *.tmp
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
@@ -224,7 +226,7 @@ fi
 
 cat /srv/scripts/alert_qwant.log.tmp >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then cat /srv/scripts/alert_qwant.log.tmp; fi
-rm /srv/scripts/alert_qwant.log.tmp /srv/scripts/Mots_clefs.tmp
+rm *.tmp
 echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
 echo " " >> /srv/scripts/alert_qwant.log
