@@ -253,10 +253,10 @@ then
 	fi
 	rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
-        echo "Le fichier BDD_veille.mail pèse $poids_BBD_mail" >> /srv/scripts/alert_qwant.log
+        echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail" >> /srv/scripts/alert_qwant.log
 	echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
-	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BBD_mail"; fi
+	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail"; fi
 	if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
 	echo " " >> /srv/scripts/alert_qwant.log
         exit 0
