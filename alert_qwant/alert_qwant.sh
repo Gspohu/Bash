@@ -178,7 +178,7 @@ then
 			 echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
 		fi
 
-        	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news" #Lien du moteur de recherche
+        	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news&l=fr" #Lien du moteur de recherche
 		curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> /srv/scripts/$mots_clefs.tmp #Récupération des liens sur le moteur de recherche
 
 		#Vérification des doublons
