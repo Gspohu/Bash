@@ -106,6 +106,9 @@ then
 	echo "Envoyer les liens par mail (érivez mail) ou dans un fichier (écrivez fichier) :" >> /srv/scripts/alert_qwant.conf
         echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail." >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail."; fi
+        echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+        exit 0
 fi
 
 if [ ! -f "/srv/scripts/Mots_clefs.list" ] # Test de la présence de la liste des mots clefs 
