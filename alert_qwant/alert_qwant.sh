@@ -226,7 +226,7 @@ then
 	do
 		vide=$(cat /srv/scripts/$line.data)
 		elem_comparaison="<b>""$line""<b>"
-		if [ "$vide" != "elem_comparaison"]
+		if [ "$vide" != "$elem_comparaison" ]
 		then
 			cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
 			echo "" >> /srv/scripts/BDD_veille.mef
