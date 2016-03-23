@@ -225,7 +225,7 @@ then
 	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
 		vide=$(cat /srv/scripts/$line.data)
-		elem_comparaison=$("<b>""$line""<b>")
+		elem_comparaison="<b>""$line""<b>"
 		if [ "$vide" != "elem_comparaison"]
 		then
 			cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
