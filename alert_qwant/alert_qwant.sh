@@ -219,7 +219,7 @@ if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
 then
 	#Mise en forme du MEF
 	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> /srv/scripts/BDD_veille.mef
-	echo "<br><font color="grey" >Newsletter du $jour_heure</font><br/>" >> /srv/scripts/BDD_veille.mef
+	echo "<br><font color="grey" align="right" >Newsletter du $jour_heure</font><br/>" >> /srv/scripts/BDD_veille.mef
 	
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
 	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
