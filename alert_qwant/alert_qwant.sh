@@ -121,7 +121,7 @@ fi
 
 if [ ! -f "/srv/scripts/QwantandBash.png" ] # Test de la présence du logo de la newsletter
 then
-	-q -P /srv/scripts/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png
+	wget -q -P /srv/scripts/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png
 fi
 
 #Vérification de l'existance du man alert_qwant
