@@ -41,7 +41,7 @@ then
 			fi
         	elif [ $1 = "--dmail" ]
 		then
-			rm BDD_veille.mail
+			rm /srv/scripts/BDD_veille.mail
 			echo "La base de donné de liens envoyés par mail à été vidé" >> /srv/scripts/alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "La base de donné de liens envoyés par mail à été vidé"; fi
 			echo 'Historique des liens envoyé par mail' >> /srv/scripts/BDD_veille.mail
@@ -191,7 +191,7 @@ then
         	cat /srv/scripts/tmp.tmp | sort | uniq -u > /srv/scripts/$mots_clefs.tmp
 	        rm /srv/scripts/tmp.tmp
 		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> /srv/scripts/$mots_clefs.data
-		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> BDD_veille.data
+		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> /srv/scripts/BDD_veille.data
 		rm /srv/scripts/$mots_clefs.tmp
 	done
 else
