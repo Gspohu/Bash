@@ -17,7 +17,7 @@ then
 		#Option de mise à jour
         	if [ $1 = "--upgrade" ]
         	then
-                	diff_maj=$(curl -s https://github.com/Gspohu/Bash/raw/master/alert_qwant/sig.md5 | diff /srv/scripts/sig.md5 -)
+                	diff_maj=$(curl -s https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 | diff /srv/scripts/sig.md5 -)
 			if [ "$diff_maj" != "" ]
 			then
 				wget -q -P /tmp/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
