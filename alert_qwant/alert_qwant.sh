@@ -119,6 +119,10 @@ then
 	if [ "$verbose" = "Activé" ]; then echo "Le fichier de base de donnée de liens envoyé par mail a été créé"; fi
 fi
 
+if [ ! -f "/srv/scripts/QwantandBash.png" ] # Test de la présence du logo de la newsletter
+then
+	-q -P /srv/scripts/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png
+fi
 
 #Vérification de l'existance du man alert_qwant
 if [ ! -f "/usr/share/man/man1/alert_qwant.1.gz" ]
@@ -218,6 +222,10 @@ fi
 #Test pour le nombre maximum de lien
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
 then
+	#Mise en forme du MEF
+	echo '<img src="QwantandBash.png" width="100" align="left" alt="Logo" />' >> /srv/scripts/BDD_veille.mef
+	echo '<br>Newsletter du $jour_heure' >> /srv/scripts/BDD_veille.mef
+	
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
 	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
@@ -226,6 +234,7 @@ then
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'<br>'/g > /srv/scripts/BDD_veilleMEF.tmp
 	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > /srv/scripts/BDD_veille.mef
+	echo '<br><center><font color="grey" size="5pt"> Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> /srv/scripts/BDD_veille.mef
 	if [ "$choix_mail_ou_fichier" = "mail" ]
 	then
 		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
