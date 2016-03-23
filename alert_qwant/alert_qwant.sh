@@ -219,7 +219,7 @@ then
 		echo "" >> /srv/scripts/BDD_veille.mef
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'\<br\>'/g > /srv/scripts/BDD_veilleMEF.tmp
-	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'http'/'\<br\>http'/g > /srv/scripts/BDD_veille.mef
+	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > /srv/scripts/BDD_veille.mef
 	if [ "$choix_mail_ou_fichier" = "mail" ]
 	then
 		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
