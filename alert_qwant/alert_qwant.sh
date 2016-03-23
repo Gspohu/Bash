@@ -226,6 +226,7 @@ then
 	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> /srv/scripts/BDD_veille.mef
 	
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
+	poids_BDD_mail=$(ls -lh BDD_veille.mail | sed s/'.*root root '/''/g | cut -d ' ' -f1)
 	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
 		mot_clef=$(echo $line | sed s/'+'/' '/g)
@@ -252,8 +253,10 @@ then
 	fi
 	rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp
         echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
-        echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+        echo "Le fichier BDD_veille.mail pèse $poids_BBD_mail" >> /srv/scripts/alert_qwant.log
+	echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
+	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poid_BBD_mail"; fi
 	if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
 	echo " " >> /srv/scripts/alert_qwant.log
         exit 0
