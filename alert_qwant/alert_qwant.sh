@@ -20,7 +20,7 @@ then
                 	diff_maj=$(curl -s https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 | diff /srv/scripts/sig.md5 -)
 			if [ "$diff_maj" != "" ]
 			then
-				wget -q -P /tmp/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
+				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/alert_qwant.sh
 				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5
 				rm /srv/scripts/alert_qwant.sh /srv/scripts/sig.md5
 				mv /tmp/alert_qwant.sh /srv/scripts/alert_qwant.sh
@@ -32,7 +32,6 @@ then
 				echo " " >> /srv/scripts/alert_qwant.log		
 				exit 0
 			else
-				rm /tmp/alert_qwant.sh
 				echo "Aucune mise à jour disponible" >> /srv/scripts/alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Aucune mise à jour disponible"; fi
                                 echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
@@ -210,8 +209,13 @@ do
 	echo "$nbline" > /srv/scripts/nbline.tmp
 done
 
+#Test de la présence du fichier nbline.tmp
+if [ -f "/srv/scripts/nbline.tmp" ] 
+then
+	nbline=$(cat /srv/scripts/nbline.tmp)
+fi
+
 #Test pour le nombre maximum de lien
-nbline=$(cat /srv/scripts/nbline.tmp)
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
 then
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
