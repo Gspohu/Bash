@@ -21,8 +21,10 @@ then
 			if [ "$diff_maj" != "" ]
 			then
 				wget -q -P /tmp/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
-				rm /srv/scripts/alert_qwant.sh
+				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5
+				rm /srv/scripts/alert_qwant.sh /srv/scripts/sig.md5
 				mv /tmp/alert_qwant.sh /srv/scripts/alert_qwant.sh
+				mv /tmp/sig.md5 /srv/scripts/sig.md5
 				echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour "; fi
 				echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
