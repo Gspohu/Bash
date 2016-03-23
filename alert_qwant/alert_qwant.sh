@@ -239,7 +239,7 @@ then
 	done
 	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'<br>'/g > /srv/scripts/BDD_veilleMEF.tmp
 	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > /srv/scripts/BDD_veille.mef
-	echo '<br><center><font color="grey" size="1pt"> Powered by Qwant lite <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="100"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> /srv/scripts/BDD_veille.mef
+	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by Qwant lite <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> /srv/scripts/BDD_veille.mef
 	if [ "$choix_mail_ou_fichier" = "mail" ]
 	then
 		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
