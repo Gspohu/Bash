@@ -174,7 +174,7 @@ then
 		#Inscription de l'entête
 		if [ ! -f "/srv/scripts/$mots_clefs.data" ]
 		then
-			 echo "<br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
+			 echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
 		fi
 
         	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news" #Lien du moteur de recherche
@@ -218,7 +218,7 @@ then
 		cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
 		echo "" >> /srv/scripts/BDD_veille.mef
 	done
-	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'\<br\>'/g > /srv/scripts/BDD_veilleMEF.tmp
+	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'<br>'/g > /srv/scripts/BDD_veilleMEF.tmp
 	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > /srv/scripts/BDD_veille.mef
 	if [ "$choix_mail_ou_fichier" = "mail" ]
 	then
