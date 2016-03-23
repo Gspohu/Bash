@@ -178,7 +178,7 @@ then
 		fi
 
         	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news" #Lien du moteur de recherche
-		curl -s $moteur | grep -A 3 $indice | grep -o http[^\"]* | head -n $nbliens_mots_clefs | sed s/' '/'\n '/g >> /srv/scripts/$mots_clefs.tmp #Récupération des liens sur le moteur de recherche
+		curl -s $moteur | grep -A 3 $indice | grep -o \<a href[^\<\/a\>]* | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> /srv/scripts/$mots_clefs.tmp #Récupération des liens sur le moteur de recherche
 
 		#Vérification des doublons
 		cat /srv/scripts/$mots_clefs.tmp | sort > /srv/scripts/tmp
