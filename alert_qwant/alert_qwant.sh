@@ -97,6 +97,7 @@ then
         echo "###Fichier de configuration pour alert_qwant###" >> /srv/scripts/alert_qwant.conf
         echo "" >> /srv/scripts/alert_qwant.conf
         echo "Fréquence de lancement de alert_qwant par jour (Divisé par le nombre d'heure par jour doit être entier) : 12" >> /srv/scripts/alert_qwant.conf
+	echo "Langue de la veille : fr" >> /srv/scripts/alert_qwant.conf
         echo "Nombre de liens récupéré par mot clef : 4" >> /srv/scripts/alert_qwant.conf
         echo "Nombre de liens envoyé par mail : 50" >> /srv/scripts/alert_qwant.conf
         echo "Une fois les liens récupérés, les envoyers par mail (tapez : mail) ou les envoyers dans un fichier (tapez : le/lien/absolu/du/fichier) :" >> /srv/scripts/alert_qwant.conf
@@ -148,6 +149,7 @@ choix_mail_ou_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Envoyer".* 
 adresse_mail=$(cat /srv/scripts/alert_qwant.conf | grep -o "Adresse".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 freq_cron=$((24/$freq))
 chemin_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Chemin".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+langue=$(cat /srv/scripts/alert_qwant.conf | grep -o "Langue".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 
 #Mise en place du lancement automatique avec cron
 crontab -l > /tmp/crontab_tmp.tmp
@@ -177,7 +179,7 @@ then
 			 echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
 		fi
 
-        	moteur="https://lite.qwant.com/?lang=fr_fr&q=$mots_clefs&t=news&l=fr" #Lien du moteur de recherche
+        	moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=$langue" #Lien du moteur de recherche
 		curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> /srv/scripts/$mots_clefs.tmp #Récupération des liens sur le moteur de recherche
 
 		#Vérification des doublons
