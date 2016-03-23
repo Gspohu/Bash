@@ -17,10 +17,10 @@ then
 		#Option de mise à jour
         	if [ $1 = "--upgrade" ]
         	then
-                	wget -q -P /tmp/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
-                	diff_maj=$(diff /srv/scripts/alert_qwant.sh /tmp/alert_qwant.sh)
+                	diff_maj=$(curl -s https://github.com/Gspohu/Bash/raw/master/alert_qwant/sig.md5 | diff /srv/scripts/sig.md5 -)
 			if [ "$diff_maj" != "" ]
 			then
+				wget -q -P /tmp/ https://github.com/Gspohu/Bash/raw/master/alert_qwant/alert_qwant.sh
 				rm /srv/scripts/alert_qwant.sh
 				mv /tmp/alert_qwant.sh /srv/scripts/alert_qwant.sh
 				echo "Une mise à jour est disponible, elle à été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
