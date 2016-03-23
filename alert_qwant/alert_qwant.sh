@@ -224,8 +224,9 @@ then
 	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
 	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
+		mot_clef=$(echo $line | sed s/'+'/' '/g)
 		vide=$(cat /srv/scripts/$line.data)
-		elem_comparaison="<br><br><b>""$line""<b><br>"
+		elem_comparaison="<br><br><b>""$mot_clef""<b><br>"
 		if [ "$vide" != "$elem_comparaison" ]
 		then
 			cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
