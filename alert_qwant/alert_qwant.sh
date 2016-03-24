@@ -60,6 +60,11 @@ then
 			mail="Activé"
 			echo "Option envoi de mail sans taille limite activé" >> /srv/scripts/alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "Option envoi de mail sans taille limite activé"; fi
+		elif [ $1 = "--fichier" ]
+		then
+			fichier="Activé"
+			echo "Option envoi vers un fichier sans taille limite activé" >> /srv/scripts/alert_qwant.log
+                        if [ "$verbose" = "Activé" ]; then echo "Option envoi vers un fichier sans taille limite activé"; fi
 		else
                 	if [ "$verbose" = "Activé" ]; then echo "Erreur : Option non reconnue"; fi
 			echo 'Erreur : Option non reconnue' >> /srv/scripts/alert_qwant.log
@@ -219,7 +224,7 @@ then
 fi
 
 #Test pour le nombre maximum de lien
-if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ]
+if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
 then
 	#Mise en forme du MEF
 	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> /srv/scripts/BDD_veille.mef
@@ -241,10 +246,10 @@ then
 	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'<br>'/g > /srv/scripts/BDD_veilleMEF.tmp
 	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > /srv/scripts/BDD_veille.mef
 	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> /srv/scripts/BDD_veille.mef
-	if [ "$choix_mail_ou_fichier" = "mail" ]
+	if [ "$choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
 	then
 		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
-        elif [ "$choix_mail_ou_fichier" = "fichier" ]
+        elif [ "$choix_mail_ou_fichier" = "fichier" ] || [ "$fichier" = "Activé" ]
 	then
 		cat /srv/scripts/BDD_veille.mef > $chemin_fichier/Newsletter.html
 	else
