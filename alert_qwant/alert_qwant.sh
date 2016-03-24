@@ -247,6 +247,14 @@ fi
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
 then
 	#Mise en forme du MEF
+	echo '<!doctype html>' >> /srv/scripts/BDD_veille.mef
+	echo '<html lang="fr">' >> /srv/scripts/BDD_veille.mef
+	echo '<head>' >> /srv/scripts/BDD_veille.mef
+	echo '<meta charset="utf-8">' >> /srv/scripts/BDD_veille.mef
+	echo '<title>[Alert Qwant] Newsletter</title>' >> /srv/scripts/BDD_veille.mef
+	echo '<link rel="stylesheet" href="style.css">' >> /srv/scripts/BDD_veille.mef
+	echo '</head>' >> /srv/scripts/BDD_veille.mef
+	echo '<body>' >> /srv/scripts/BDD_veille.mef
 	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> /srv/scripts/BDD_veille.mef
 	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> /srv/scripts/BDD_veille.mef
 	
@@ -263,9 +271,14 @@ then
 			echo "" >> /srv/scripts/BDD_veille.mef
 		fi
 	done
+
 	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'<br>'/g > /srv/scripts/BDD_veilleMEF.tmp
 	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > /srv/scripts/BDD_veille.mef
+
 	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> /srv/scripts/BDD_veille.mef
+	echo '</body>' >> /srv/scripts/BDD_veille.mef
+	echo '</html>' >> /srv/scripts/BDD_veille.mef
+
 	if [ "$choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
 	then
 		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
