@@ -11,7 +11,8 @@ cpt=0
 #Lecture des options
 if [ $# -ge 1 ]
 then
-	while [ $cpt -le $# ] #Boucle de lecture des options
+	nboptions=$(echo $#)
+	while [ $cpt -le $nboptions ] #Boucle de lecture des options
 	do
 	((cpt++))
 		#Option de mise à jour
