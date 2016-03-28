@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Initialisation des variables
-install="curl" #Logiciel à installer nécéssaire pour le fonctionnement du script
+install="curl" #Logiciel nécéssaire pour le fonctionnement du script
 indice="news-content" #Repère pour la div ou se trouve les résultats de la recherche
 verif_installation=$(dpkg -s $install | grep Status) #Vérification que curl est installé
 nbline=0
@@ -45,14 +45,14 @@ then
 			fi
         	elif [ $1 = "--dmail" ]
 		then
-			rm /srv/scripts/BDD_veille.mail
+			rm /srv/scripts/BDD_veille.mail >>/srv/scripts/alert_qwant.log 2>&1
 		
 			echo "La base de donné de liens envoyés par mail à été vidé" >> /srv/scripts/alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "La base de donné de liens envoyés par mail à été vidé"; fi
 			echo 'Historique des liens envoyé par mail' >> /srv/scripts/BDD_veille.mail
 		elif [ $1 = "--dlog" ] 
 		then
-			rm /srv/scripts/alert_qwant.log
+			rm /srv/scripts/alert_qwant.log >>/srv/scripts/alert_qwant.log 2>&1
 		
 			echo "Fichier log de alert_qwant" >> /srv/scripts/alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "Les logs ont été vidés"; fi
@@ -150,8 +150,29 @@ fi
 if [ ! -f "/usr/share/man/man1/alert_qwant.1.gz" ]
 then
 	#Création du man alert_qwant
-	echo 'Man de alert_qwant' >> /usr/share/man/man1/alert_qwant.1
-	echo "alert_qwant est un script Bash d'automatisation de la veille à l'aide de la fonctionnalité actu du moteur de recherche Qwant" >> /usr/share/man/man1/alert_qwant.1
+	echo "Man de alert_qwant" >> /usr/share/man/man1/alert_qwant.1
+	echo "Alert Qwant est un script Bash d'automatisation de la veille à l'aide de la fonctionnalité actualité du moteur de recherche Qwant" >> /usr/share/man/man1/alert_qwant.1
+	echo "Alert_qwant utilise une liste de mots clefs [mots_clefs.list] (le fichier est généré automatiquement), le script insert chaque mot clef dans le moetru de recherche qwant et récupère un nombre de liens définit par l'utilisateur. Une fois une limite ateinte (définit par l'utilisateur), le script envoie par mail ou dans un fichier (définit par l'utilisateur) une newsletter." >> /usr/share/man/man1/alert_qwant.1
+	echo "Le script est fait pour se lancer automatiquement, il insère un règle dans crontab" >> /usr/share/man/man1/alert_qwant.1
+	echo " " >> /usr/share/man/man1/alert_qwant.1
+	echo "Le fichier de configuration permet de configurer le script. Ce fichier de configuration est généré automatiquement au premier lancement. Pensez à le complèter." >> /usr/share/man/man1/alert_qwant.1
+	echo "" >> /usr/share/man/man1/alert_qwant.1
+	echo "Le script doit être placé dans /srv/scripts et doit être lancé en tant que root. Si le script est mal placé il se copiera lui même dans le le dossier et renverra une erreur."
+	echo "" >> /usr/share/man/man1/alert_qwant.1
+	echo "Option :" >> /usr/share/man/man1/alert_qwant.1
+	echo "--upgrade" >> /usr/share/man/man1/alert_qwant.1
+	echo "          Permet la mise à jour" >> /usr/share/man/man1/alert_qwant.1
+	echo "--dmail" >> /usr/share/man/man1/alert_qwant.1
+	echo "        Efface la base de donné des mails envoyés" >> /usr/share/man/man1/alert_qwant.1
+	echo "--dlog" >> /usr/share/man/man1/alert_qwant.1
+	echo "       Efface les log" >> /usr/share/man/man1/alert_qwant.1
+	echo "-v" >> /usr/share/man/man1/alert_qwant.1
+	echo "   Verbose" >> /usr/share/man/man1/alert_qwant.1
+	echo "--mail" >> /usr/share/man/man1/alert_qwant.1
+	echo "       Envoi un mail sans limite de taille" >> /usr/share/man/man1/alert_qwant.1
+	echo "--fichier" >> /usr/share/man/man1/alert_qwant.1
+	echo "          Envoi vers un fichier sans limite de taille" >> /usr/share/man/man1/alert_qwant.1
+	echo " " >> /usr/share/man/man1/alert_qwant.1
 	gzip /usr/share/man/man1/alert_qwant.1 >>/srv/scripts/alert_qwant.log 2>&1
 	rm  /usr/share/man/man1/alert_qwant.1 >>/srv/scripts/alert_qwant.log 2>&1
 
