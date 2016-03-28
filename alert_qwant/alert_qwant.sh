@@ -113,7 +113,7 @@ then
 	#Création du fichier de configuration
         echo "###Fichier de configuration pour alert_qwant###" >> /srv/scripts/alert_qwant.conf
         echo "" >> /srv/scripts/alert_qwant.conf
-        echo "Fréquence de lancement de alert_qwant par jour (Divisé par le nombre d'heure par jour doit être entier) : 12" >> /srv/scripts/alert_qwant.conf
+        echo "Fréquence de lancement de alert_qwant par jour (Le nombre d'heure par jours divisé par ce nombre doit être entier) : 12" >> /srv/scripts/alert_qwant.conf
 	echo "Langue de la veille : fr" >> /srv/scripts/alert_qwant.conf
         echo "Nombre de liens récupéré par mot clef : 4" >> /srv/scripts/alert_qwant.conf
         echo "Nombre de liens envoyé par mail : 50" >> /srv/scripts/alert_qwant.conf
@@ -175,6 +175,77 @@ adresse_mail=$(cat /srv/scripts/alert_qwant.conf | grep -o "Adresse".* | head -n
 freq_cron=$((24/$freq))
 chemin_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Chemin".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 langue=$(cat /srv/scripts/alert_qwant.conf | grep -o "Langue".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+
+#Vérification des erreurs dans la récupération des variables du fichier de configuration
+#freq
+test_entier=$(($freq*$freq_cron))
+if [ $test_entier -ne 24 ]
+then
+	echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger"; fi
+fi
+
+#nbliens_mots_clefs
+if [ $nbliens_mots_clefs -eq 0]
+then
+	echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
+	$nbliens_mots_clefs=4
+elif [ $nbliens_mots_clefs -gt 10 ]
+then
+	        echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
+        $nbliens_mots_clefs=10
+fi
+
+#choix_mail_ou_fichier
+if [ "$choix_mail_ou_fichier" != "mail" ] && [ "$choix_mail_ou_fichier" != "fichier"]
+then
+	if [ "$adresse_mail" = "" ] && [ "$chemin_fichier" != "" ]
+	then
+		$choix_mail_ou_fichier="fichier"
+	elif [ "$chemin_fichier" = "" ] && [ "$adresse_mail" != "" ]
+	then
+		$choix_mail_ou_fichier="mail"
+	else
+		echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier" >> /srv/scripts/alert_qwant.log
+        	if [ "$verbose" = "Activé" ]; then echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier"; fi
+		echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+	        if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+        	exit 0 #Fin du programme
+	fi
+fi
+#adresse_mail
+arob=$(echo $adresse_mail | grep -o @.*) #Recherche de la présence d'un @
+domaine=$(echo $arob | grep -o [.].*) #Recherche de la présence d'un nom de domaine
+
+if [ "$arob" = "" ] || [ "$domaine" = "" ]
+then
+	echo "L'adresse mail entré est fausse, veuillez corriger" >> /srv/scripts/alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "L'adresse mail entré est fausse, veuillez corriger"; fi
+	if [ "$choix_mail_ou_fichier" = "mail" ]
+	then
+               	echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
+               	if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+               	exit 0 #Fin du programme
+	fi
+fi
+
+#chemin fichier
+if [ ! -d "$chemin_fichier" ]
+then
+        echo "Le dossier $chemin_fichier n'existe pas, il sera créé" >> /srv/scripts/alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "Le dossier $chemin_fichier n'existe pas, il sera créé"; fi
+fi
+
+#langue
+if [ "$langue" != "en" ] && [ "$langue" != "fr" ] && [ "$langue" != "de" ] && [ "$langue" != "es" ] && [ "$langue" != "it" ] && [ "$langue" != "pt" ] && [ "$langue" != "nl" ] && [ "$langue" != "ru" ] && [ "$langue" != "pl" ] && [ "$langue" != "zh" ]
+then
+        echo "La langue entré n'est pas disponible, langue est passé en Français" >> /srv/scripts/alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "La langue entré n'est pas disponible, langue est passé en Français"; fi
+	langue="fr"
+fi
+
 
 #Mise en place du lancement automatique avec cron
 crontab -l > /tmp/crontab_tmp.tmp
