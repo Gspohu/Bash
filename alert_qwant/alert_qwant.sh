@@ -176,6 +176,7 @@ freq_cron=$((24/$freq))
 chemin_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Chemin".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 langue=$(cat /srv/scripts/alert_qwant.conf | grep -o "Langue".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 
+
 #Vérification des erreurs dans la récupération des variables du fichier de configuration
 #freq
 test_entier=$(($freq*$freq_cron))
@@ -186,16 +187,16 @@ then
 fi
 
 #nbliens_mots_clefs
-if [ $nbliens_mots_clefs -eq 0]
+if [ $nbliens_mots_clefs -eq 0 ]
 then
 	echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
-	$nbliens_mots_clefs=4
+	nbliens_mots_clefs=4
 elif [ $nbliens_mots_clefs -gt 10 ]
 then
 	        echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
-        $nbliens_mots_clefs=10
+        nbliens_mots_clefs=10
 fi
 
 #choix_mail_ou_fichier
