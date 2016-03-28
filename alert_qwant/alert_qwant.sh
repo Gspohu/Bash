@@ -104,6 +104,7 @@ then
         echo 'Erreur : Le script est mal placé. Il a été copier dans le repertoire /srv/scripts/' >> /srv/scripts/alert_qwant.log
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+	echo " " >> /srv/scripts/alert_qwant.log
         exit 0 #Fin du programme
 fi
 
@@ -125,6 +126,7 @@ then
 	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail."; fi
         echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+	echo " " >> /srv/scripts/alert_qwant.log
         exit 0 #Fin du programme
 fi
 
@@ -213,6 +215,7 @@ then
         	if [ "$verbose" = "Activé" ]; then echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier"; fi
 		echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	        if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+		echo " " >> /srv/scripts/alert_qwant.log
         	exit 0 #Fin du programme
 	fi
 fi
@@ -228,6 +231,7 @@ then
 	then
                	echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
                	if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
+		echo " " >> /srv/scripts/alert_qwant.log
                	exit 0 #Fin du programme
 	fi
 fi
