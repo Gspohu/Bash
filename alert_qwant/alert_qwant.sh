@@ -22,8 +22,8 @@ then
                 	diff_maj=$(curl -s https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 | diff /srv/scripts/sig.md5 -)
 			if [ "$diff_maj" != "" ] 
 			then
-				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/alert_qwant.sh >>alert_qwant.log 2>&1
-				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 >>alert_qwant.log 2>&1
+				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/alert_qwant.sh >>/srv/scripts/alert_qwant.log 2>&1
+				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 >>/srv/scripts/alert_qwant.log 2>&1
 			
 				rm /srv/scripts/alert_qwant.sh /srv/scripts/sig.md5
 				mv /tmp/alert_qwant.sh /srv/scripts/alert_qwant.sh
@@ -90,7 +90,7 @@ if [ "$verbose" = "Activé" ]; then echo "Lancement alert_qwant.sh le $jour_heur
 ou_suis_je=$(pwd)"/alert_qwant.sh"
 if [ ! -d "/srv/scripts/" ] #Vérification de l'existance du dossier scripts
 then
-        mkdir /srv/scripts
+        mkdir /srv/scripts 
 
         echo "Le dossier scripts à été créé dans /srv/" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Le dossier scripts à été créé dans /srv/"; fi
@@ -152,8 +152,8 @@ then
 	#Création du man alert_qwant
 	echo 'Man de alert_qwant' >> /usr/share/man/man1/alert_qwant.1
 	echo "alert_qwant est un script Bash d'automatisation de la veille à l'aide de la fonctionnalité actu du moteur de recherche Qwant" >> /usr/share/man/man1/alert_qwant.1
-	gzip /usr/share/man/man1/alert_qwant.1
-	rm  /usr/share/man/man1/alert_qwant.1
+	gzip /usr/share/man/man1/alert_qwant.1 >>/srv/scripts/alert_qwant.log 2>&1
+	rm  /usr/share/man/man1/alert_qwant.1 >>/srv/scripts/alert_qwant.log 2>&1
 
 	echo 'Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant' >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant"; fi
@@ -165,7 +165,7 @@ cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.tmp
 #Création de BDD_veille.data pour permettre la comparaison entre les liens des différents mots clefs
 if [ ! -f "/srv/scripts/BDD_veille.data" ]
 then
-	touch /srv/scripts/BDD_veille.data
+	touch /srv/scripts/BDD_veille.data >>/srv/scripts/alert_qwant.log 2>&1
 fi
 
 #Lecture du fichier de configuration
@@ -261,11 +261,11 @@ then
 	cat /tmp/crontab_tmp_tmp.tmp > /tmp/crontab_tmp.tmp
 	echo "0 */$freq_cron * * * bash /srv/scripts/alert_qwant.sh >> /srv/scripts/cron.log 2>&1" >> /tmp/crontab_tmp.tmp
 	crontab /tmp/crontab_tmp.tmp
-	rm -f /tmp/crontab_tmp.tmp /tmp/crontab_tmp_tmp.tmp
+	rm -f /tmp/crontab_tmp.tmp /tmp/crontab_tmp_tmp.tmp >>/srv/scripts/alert_qwant.log 2>&1
 	echo "Ajout d'une règle dans crontab" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Ajout d'une règle dans crontab"; fi
 else
-	rm /tmp/crontab_tmp.tmp
+	rm /tmp/crontab_tmp.tmp >>/srv/scripts/alert_qwant.log 2>&1
 fi
 
 if [ "$verif_installation" = "Status: install ok installed" ] #Test de l'installation de curl
@@ -289,16 +289,16 @@ then
 		cat /srv/scripts/BDD_veille.mail | sort >> /srv/scripts/tmp
 		cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/tmp
 		cat /srv/scripts/tmp | sort | uniq -d > /srv/scripts/tmp.tmp
-	        rm /srv/scripts/tmp
+	        rm /srv/scripts/tmp >>/srv/scripts/alert_qwant.log 2>&1
  		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/tmp.tmp
         	cat /srv/scripts/tmp.tmp | sort | uniq -u > /srv/scripts/$mots_clefs.tmp
-	        rm /srv/scripts/tmp.tmp
+	        rm /srv/scripts/tmp.tmp >>/srv/scripts/alert_qwant.log 2>&1
 		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> /srv/scripts/$mots_clefs.data
 		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> /srv/scripts/BDD_veille.data
-		rm /srv/scripts/$mots_clefs.tmp
+		rm /srv/scripts/$mots_clefs.tmp >>/srv/scripts/alert_qwant.log 2>&1
 	done
 else
-	apt-get install $install #installation de curl
+	apt-get install $install >>/srv/scripts/alert_qwant.log 2>&1 #installation de curl
 	echo "Le logiciel $install a été installé" >> /srv/scripts/alert_qwant.log
 
 	echo "Fin de l'éxécution du programme avec une erreur critique, veuillez relancer" >> /srv/scripts/alert_qwant.log
@@ -369,7 +369,7 @@ then
 		echo "Choix mail ou fichier argument invalide" >> /srv/scripts/alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
 	fi
-	rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp
+	rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp >>/srv/scripts/alert_qwant.log 2>&1
         echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail" >> /srv/scripts/alert_qwant.log
 	echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail"; fi
@@ -380,7 +380,7 @@ fi
 
 echo "Le fichier de base de donnée de veille contient $nbline liens" >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Le fichier de base de donnée de veille contient $nbline liens"; fi
-rm /srv/scripts/*.tmp
+rm /srv/scripts/*.tmp >>/srv/scripts/alert_qwant.log 2>&1
 echo "Fin de l'éxécution du programme" >> /srv/scripts/alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Fin de l'éxécution du programme"; fi
 echo " " >> /srv/scripts/alert_qwant.log
