@@ -1,5 +1,4 @@
-Mise à jour du man
+Vérification des fautes d'orthographe
+Ajoût de l'option --help
 Fonctionnalité de vérification que le man est à jour
-Ajoût de l'option --fichier même comportement que --mail mais vers un fichier
-Gestion des erreurs >>2&
 Restructuration du code à l'aide de fonction
