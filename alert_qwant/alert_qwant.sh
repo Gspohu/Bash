@@ -19,130 +19,122 @@ then
         	if [ $1 = "--upgrade" ]
         	then
 			#Récupération de la signature MD5 de la dernière version
-                	diff_maj=$(curl -s https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 | diff /srv/scripts/sig.md5 -)
+                	diff_maj=$(curl -s https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 | diff sig.md5 -)
 			if [ "$diff_maj" != "" ] 
 			then
-				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/alert_qwant.sh >>/srv/scripts/alert_qwant.log 2>&1
-				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 >>/srv/scripts/alert_qwant.log 2>&1
+				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/alert_qwant.sh >>alert_qwant.log 2>&1
+				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 >>alert_qwant.log 2>&1
 			
-				rm /srv/scripts/alert_qwant.sh /srv/scripts/sig.md5
-				mv /tmp/alert_qwant.sh /srv/scripts/alert_qwant.sh
-				mv /tmp/sig.md5 /srv/scripts/sig.md5
+				rm alert_qwant.sh sig.md5
+				mv /tmp/alert_qwant.sh alert_qwant.sh
+				mv /tmp/sig.md5 sig.md5
 
-				echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour " >> /srv/scripts/alert_qwant.log
+				echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour " >> alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour "; fi
-				echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+				echo "Fin de l'exécution du programme" >> alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-				echo " " >> /srv/scripts/alert_qwant.log		
+				echo " " >> alert_qwant.log		
 				exit 0 #Fin du programme
 			else
-				echo "Aucune mise à jour disponible" >> /srv/scripts/alert_qwant.log
+				echo "Aucune mise à jour disponible" >> alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Aucune mise à jour disponible"; fi
-                                echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+                                echo "Fin de l'exécution du programme" >> alert_qwant.log
                                 if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-                                echo " " >> /srv/scripts/alert_qwant.log
+                                echo " " >> alert_qwant.log
                                 exit 0 #Fin du programme
 			fi
         	elif [ $1 = "--dmail" ]
 		then
-			rm /srv/scripts/BDD_veille.mail >>/srv/scripts/alert_qwant.log 2>&1
+			rm BDD_veille.mail >>alert_qwant.log 2>&1
 		
-			echo "La base de donné de liens envoyés par mail à été vidé" >> /srv/scripts/alert_qwant.log
+			echo "La base de donné de liens envoyés par mail à été vidé" >> alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "La base de donné de liens envoyés par mail à été vidé"; fi
-			echo 'Historique des liens envoyé par mail' >> /srv/scripts/BDD_veille.mail
+			echo 'Historique des liens envoyé par mail' >> BDD_veille.mail
 		elif [ $1 = "--dlog" ] 
 		then
-			rm /srv/scripts/alert_qwant.log >>/srv/scripts/alert_qwant.log 2>&1
+			rm alert_qwant.log >>alert_qwant.log 2>&1
 		
-			echo "Fichier log de alert_qwant" >> /srv/scripts/alert_qwant.log
+			echo "Fichier log de alert_qwant" >> alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "Les logs ont été vidés"; fi
 		elif [ $1 = "-v" ]
 		then
 			verbose="Activé"
 
 			if [ "$verbose" = "Activé" ]; then echo "Option verbose activé"; fi
-                        echo "Option verbose activé" >> /srv/scripts/alert_qwant.log
+                        echo "Option verbose activé" >> alert_qwant.log
 		elif [ $1 = "--mail" ]
 		then
 			mail="Activé"
 
-			echo "Option envoi de mail sans taille limite activé" >> /srv/scripts/alert_qwant.log
+			echo "Option envoi de mail sans taille limite activé" >> alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "Option envoi de mail sans taille limite activé"; fi
 		elif [ $1 = "--fichier" ]
 		then
 			fichier="Activé"
 
-			echo "Option envoi vers un fichier sans taille limite activé" >> /srv/scripts/alert_qwant.log
+			echo "Option envoi vers un fichier sans taille limite activé" >> alert_qwant.log
                         if [ "$verbose" = "Activé" ]; then echo "Option envoi vers un fichier sans taille limite activé"; fi
 		else
                 	if [ "$verbose" = "Activé" ]; then echo "Erreur : Option non reconnue"; fi
-			echo 'Erreur : Option non reconnue' >> /srv/scripts/alert_qwant.log
+			echo 'Erreur : Option non reconnue' >> alert_qwant.log
         	fi
 		shift #Permet de décalage du prochain paramètre dans la variable $1
 	done
 fi
 
 #Ecrire dans le log l'heure du lancement
-echo "Lancement alert_qwant.sh le $jour_heure :" >> /srv/scripts/alert_qwant.log
+echo "Lancement alert_qwant.sh le $jour_heure :" >> alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Lancement alert_qwant.sh le $jour_heure :"; fi
 
 #Vérification de l'emplacement du script
-ou_suis_je=$(pwd)"/alert_qwant.sh"
-if [ ! -d "/srv/scripts/" ] #Vérification de l'existence du dossier scripts
+ou_suis_je_home=$(pwd | cut -d\/ -f 2)
+ou_suis_je_proffondeur=$(pwd | grep -o /)
+
+if [ "$ou_sui_je_home" != "home" ] && [ "$ou_suis_je_proffondeur" != "/ /" ] #Vérification de l'existence du script alert_qwant.sh
 then
-        mkdir /srv/scripts 
-
-        echo "Le dossier scripts à été créé dans /srv/" >> /srv/scripts/alert_qwant.log
-	if [ "$verbose" = "Activé" ]; then echo "Le dossier scripts à été créé dans /srv/"; fi
-fi
-
-if [ ! -f "/srv/scripts/alert_qwant.sh" ] #Vérification de l'existence du script alert_qwant.sh
-then
-        cp $ou_suis_je /srv/scripts/
-
-        echo 'Erreur : Le script est mal placé. Il a été copier dans le repertoire /srv/scripts/'
-        echo 'Erreur : Le script est mal placé. Il a été copier dans le repertoire /srv/scripts/' >> /srv/scripts/alert_qwant.log
-        echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+        echo 'Erreur critique : Le script est mal placé. Il doit être placé à la racine de votre home'
+        echo 'Erreur critique : Le script est mal placé. Il doit être placé à la racine de votre home' >> alert_qwant.log
+        echo "Fin de l'exécution du programme" >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-	echo " " >> /srv/scripts/alert_qwant.log
+	echo " " >> alert_qwant.log
         exit 0 #Fin du programme
 fi
 
 #Vérification de la présence des fichiers systèmes
-if [ ! -f "/srv/scripts/alert_qwant.conf" ] # Test de la présence du fichier de configuration
+if [ ! -f "alert_qwant.conf" ] # Test de la présence du fichier de configuration
 then
 	#Création du fichier de configuration
-        echo "###Fichier de configuration pour alert_qwant###" >> /srv/scripts/alert_qwant.conf
-        echo "" >> /srv/scripts/alert_qwant.conf
-        echo "Fréquence de lancement de alert_qwant par jour (Le nombre d'heure par jours divisé par ce nombre doit être entier) : 12" >> /srv/scripts/alert_qwant.conf
-	echo "Langue de la veille : fr" >> /srv/scripts/alert_qwant.conf
-        echo "Nombre de liens récupéré par mot clef : 4" >> /srv/scripts/alert_qwant.conf
-        echo "Nombre de liens envoyé par mail : 50" >> /srv/scripts/alert_qwant.conf
-        echo "Une fois les liens récupérés, les envoyers par mail (tapez mail) ou les envoyers dans un fichier (tapez le/lien/absolu/du/fichier) :" >> /srv/scripts/alert_qwant.conf
-        echo "Adresse mail : adresse@mail.eu" >> /srv/scripts/alert_qwant.conf
-	echo "Chemin absolu du fichier :" >> /srv/scripts/alert_qwant.conf
+        echo "###Fichier de configuration pour alert_qwant###" >> alert_qwant.conf
+        echo "" >> alert_qwant.conf
+        echo "Fréquence de lancement de alert_qwant par jour (Le nombre d'heure par jours divisé par ce nombre doit être entier) : 12" >> alert_qwant.conf
+	echo "Langue de la veille : fr" >> alert_qwant.conf
+        echo "Nombre de liens récupéré par mot clef : 4" >> alert_qwant.conf
+        echo "Nombre de liens envoyé par mail : 50" >> alert_qwant.conf
+        echo "Une fois les liens récupérés, les envoyers par mail (tapez mail) ou les envoyers dans un fichier (tapez le/lien/absolu/du/fichier) :" >> alert_qwant.conf
+        echo "Adresse mail : adresse@mail.eu" >> alert_qwant.conf
+	echo "Chemin absolu du fichier :" >> alert_qwant.conf
 
-        echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail." >> /srv/scripts/alert_qwant.log
-	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans /srv/scripts/, avec les paramètres de bases. Pensez à changer l'adresse mail."; fi
-        echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+        echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à changer l'adresse mail." >> alert_qwant.log
+	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à changer l'adresse mail."; fi
+        echo "Fin de l'exécution du programme" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-	echo " " >> /srv/scripts/alert_qwant.log
+	echo " " >> alert_qwant.log
         exit 0 #Fin du programme
 fi
 
-if [ ! -f "/srv/scripts/Mots_clefs.list" ] # Test de la présence de la liste des mots clefs 
+if [ ! -f "Mots_clefs.list" ] # Test de la présence de la liste des mots clefs 
 then
 	#Création de la liste des mots clefs
-        echo 'Qwant' >> /srv/scripts/Mots_clefs.list
+        echo 'Qwant' >> Mots_clefs.list
 
-        echo 'Erreur : Votre liste de mots clefs est vide et a été créé automatiquement. Pensez à éditer le fichier Mots_clefs.list' >> /srv/scripts/alert_qwant.log
+        echo 'Erreur : Votre liste de mots clefs est vide et a été créé automatiquement. Pensez à éditer le fichier Mots_clefs.list' >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Erreur : Votre liste de mots clefs est vide et a été créé automatiquement. Pensez à éditer le fichier Mots_clefs.list"; fi
-elif [ ! -f "/srv/scripts/BDD_veille.mail" ] # Test de la présence de la BDD des mails envoyés
+elif [ ! -f "BDD_veille.mail" ] # Test de la présence de la BDD des mails envoyés
 then
 	#Création de la BDD_veille.mail
-        echo 'Historique des liens envoyé par mail' >> /srv/scripts/BDD_veille.mail
+        echo 'Historique des liens envoyé par mail' >> BDD_veille.mail
 
-        echo "Le fichier de base de données de liens envoyé par mail a été créé" >> /srv/scripts/alert_qwant.log
+        echo "Le fichier de base de données de liens envoyé par mail a été créé" >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Le fichier de base de données de liens envoyé par mail a été créé"; fi
 fi
 
@@ -173,31 +165,31 @@ then
 	echo "--fichier" >> /usr/share/man/man1/alert_qwant.1
 	echo "          Envoi vers un fichier sans limite de taille" >> /usr/share/man/man1/alert_qwant.1
 	echo " " >> /usr/share/man/man1/alert_qwant.1
-	gzip /usr/share/man/man1/alert_qwant.1 >>/srv/scripts/alert_qwant.log 2>&1
-	rm  /usr/share/man/man1/alert_qwant.1 >>/srv/scripts/alert_qwant.log 2>&1
+	gzip /usr/share/man/man1/alert_qwant.1 >>alert_qwant.log 2>&1
+	rm  /usr/share/man/man1/alert_qwant.1 >>alert_qwant.log 2>&1
 
-	echo 'Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant' >> /srv/scripts/alert_qwant.log
+	echo 'Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant' >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant"; fi
 fi
 
 #Suppression des espaces dans le fichier contenant les mots clefs
-cat /srv/scripts/Mots_clefs.list | sed s/' '/'+'/g > /srv/scripts/Mots_clefs.tmp
+cat Mots_clefs.list | sed s/' '/'+'/g > Mots_clefs.tmp
 
 #Création de BDD_veille.data pour permettre la comparaison entre les liens des différents mots clefs
-if [ ! -f "/srv/scripts/BDD_veille.data" ]
+if [ ! -f "BDD_veille.data" ]
 then
-	touch /srv/scripts/BDD_veille.data >>/srv/scripts/alert_qwant.log 2>&1
+	touch BDD_veille.data >> alert_qwant.log 2>&1
 fi
 
 #Lecture du fichier de configuration
-freq=$(cat /srv/scripts/alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-nbliens_mots_clefs=$(cat /srv/scripts/alert_qwant.conf | grep -o "Nombre de liens récupéré".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-nbliens_par_mail=$(cat /srv/scripts/alert_qwant.conf | grep -o "Nombre de liens envoyé".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-choix_mail_ou_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Une fois".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-adresse_mail=$(cat /srv/scripts/alert_qwant.conf | grep -o "Adresse".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+freq=$(cat alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+nbliens_mots_clefs=$(cat alert_qwant.conf | grep -o "Nombre de liens récupéré".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+nbliens_par_mail=$(cat alert_qwant.conf | grep -o "Nombre de liens envoyé".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+choix_mail_ou_fichier=$(cat alert_qwant.conf | grep -o "Une fois".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+adresse_mail=$(cat alert_qwant.conf | grep -o "Adresse".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 freq_cron=$((24/$freq))
-chemin_fichier=$(cat /srv/scripts/alert_qwant.conf | grep -o "Chemin".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-langue=$(cat /srv/scripts/alert_qwant.conf | grep -o "Langue".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+chemin_fichier=$(cat alert_qwant.conf | grep -o "Chemin".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+langue=$(cat alert_qwant.conf | grep -o "Langue".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 
 
 #Vérification des erreurs dans la récupération des variables du fichier de configuration
@@ -205,19 +197,19 @@ langue=$(cat /srv/scripts/alert_qwant.conf | grep -o "Langue".* | head -n 1 | cu
 test_entier=$(($freq*$freq_cron))
 if [ $test_entier -ne 24 ]
 then
-	echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
+	echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger"; fi
 fi
 
 #nbliens_mots_clefs
 if [ $nbliens_mots_clefs -eq 0 ]
 then
-	echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
+	echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
 	nbliens_mots_clefs=4
 elif [ $nbliens_mots_clefs -gt 10 ]
 then
-	        echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger" >> /srv/scripts/alert_qwant.log
+	        echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
         nbliens_mots_clefs=10
 fi
@@ -232,11 +224,11 @@ then
 	then
 		$choix_mail_ou_fichier="mail"
 	else
-		echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier" >> /srv/scripts/alert_qwant.log
+		echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier" >> alert_qwant.log
         	if [ "$verbose" = "Activé" ]; then echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier"; fi
-		echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+		echo "Fin de l'exécution du programme" >> alert_qwant.log
 	        if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-		echo " " >> /srv/scripts/alert_qwant.log
+		echo " " >> alert_qwant.log
         	exit 0 #Fin du programme
 	fi
 fi
@@ -246,13 +238,13 @@ domaine=$(echo $arob | grep -o [.].*) #Recherche de la présence d'un nom de dom
 
 if [ "$arob" = "" ] || [ "$domaine" = "" ]
 then
-	echo "L'adresse mail entré est fausse, veuillez corriger" >> /srv/scripts/alert_qwant.log
+	echo "L'adresse mail entré est fausse, veuillez corriger" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "L'adresse mail entré est fausse, veuillez corriger"; fi
 	if [ "$choix_mail_ou_fichier" = "mail" ]
 	then
-               	echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+               	echo "Fin de l'exécution du programme" >> alert_qwant.log
                	if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-		echo " " >> /srv/scripts/alert_qwant.log
+		echo " " >> alert_qwant.log
                	exit 0 #Fin du programme
 	fi
 fi
@@ -260,14 +252,14 @@ fi
 #chemin fichier
 if [ ! -d "$chemin_fichier" ]
 then
-        echo "Le dossier $chemin_fichier n'existe pas, il sera créé" >> /srv/scripts/alert_qwant.log
+        echo "Le dossier $chemin_fichier n'existe pas, il sera créé" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Le dossier $chemin_fichier n'existe pas, il sera créé"; fi
 fi
 
 #langue
 if [ "$langue" != "en" ] && [ "$langue" != "fr" ] && [ "$langue" != "de" ] && [ "$langue" != "es" ] && [ "$langue" != "it" ] && [ "$langue" != "pt" ] && [ "$langue" != "nl" ] && [ "$langue" != "ru" ] && [ "$langue" != "pl" ] && [ "$langue" != "zh" ]
 then
-        echo "La langue entré n'est pas disponible, langue est passé en Français" >> /srv/scripts/alert_qwant.log
+        echo "La langue entré n'est pas disponible, langue est passé en Français" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "La langue entré n'est pas disponible, langue est passé en Français"; fi
 	langue="fr"
 fi
@@ -276,133 +268,133 @@ fi
 #Mise en place du lancement automatique avec cron
 crontab -l > /tmp/crontab_tmp.tmp
 lancement_auto=$(grep alert_qwant /tmp/crontab_tmp.tmp)
-if [ "$lancement_auto" != "0 */$freq_cron * * * bash /srv/scripts/alert_qwant.sh >> /srv/scripts/cron.log 2>&1" ]
+if [ "$lancement_auto" != "0 */$freq_cron * * * bash alert_qwant.sh >> cron.log 2>&1" ]
 then
 	sed '/alert_qwant/d' /tmp/crontab_tmp.tmp > /tmp/crontab_tmp_tmp.tmp
 	cat /tmp/crontab_tmp_tmp.tmp > /tmp/crontab_tmp.tmp
-	echo "0 */$freq_cron * * * bash /srv/scripts/alert_qwant.sh >> /srv/scripts/cron.log 2>&1" >> /tmp/crontab_tmp.tmp
+	echo "0 */$freq_cron * * * bash alert_qwant.sh >> cron.log 2>&1" >> /tmp/crontab_tmp.tmp
 	crontab /tmp/crontab_tmp.tmp
-	rm -f /tmp/crontab_tmp.tmp /tmp/crontab_tmp_tmp.tmp >>/srv/scripts/alert_qwant.log 2>&1
-	echo "Ajout d'une règle dans crontab" >> /srv/scripts/alert_qwant.log
+	rm -f /tmp/crontab_tmp.tmp /tmp/crontab_tmp_tmp.tmp >>alert_qwant.log 2>&1
+	echo "Ajout d'une règle dans crontab" >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Ajout d'une règle dans crontab"; fi
 else
-	rm /tmp/crontab_tmp.tmp >>/srv/scripts/alert_qwant.log 2>&1
+	rm /tmp/crontab_tmp.tmp >>alert_qwant.log 2>&1
 fi
 
 if [ "$verif_installation" = "Status: install ok installed" ] #Test de l'installation de curl
 then
 	#Boucle pour rechercher les liens pour chaque mot clef
-	cat /srv/scripts/Mots_clefs.tmp | while read line #Lecture ligne par ligne
+	cat Mots_clefs.tmp | while read line #Lecture ligne par ligne
 	do
         	mots_clefs=$line
 
 		#Inscription de l'entête
-		if [ ! -f "/srv/scripts/$mots_clefs.data" ]
+		if [ ! -f "$mots_clefs.data" ]
 		then
-			 echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > /srv/scripts/$mots_clefs.data
+			 echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > $mots_clefs.data
 		fi
 
         	moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=$langue" #Lien du moteur de recherche
-		curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> /srv/scripts/$mots_clefs.tmp #Récupération des liens sur le moteur de recherche
+		curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> $mots_clefs.tmp #Récupération des liens sur le moteur de recherche
 
 		#Vérification des doublons
-		cat /srv/scripts/$mots_clefs.tmp | sort > /srv/scripts/tmp
-		cat /srv/scripts/BDD_veille.mail | sort >> /srv/scripts/tmp
-		cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/tmp
-		cat /srv/scripts/tmp | sort | uniq -d > /srv/scripts/tmp.tmp
-	        rm /srv/scripts/tmp >>/srv/scripts/alert_qwant.log 2>&1
- 		cat /srv/scripts/$mots_clefs.tmp >> /srv/scripts/tmp.tmp
-        	cat /srv/scripts/tmp.tmp | sort | uniq -u > /srv/scripts/$mots_clefs.tmp
-	        rm /srv/scripts/tmp.tmp >>/srv/scripts/alert_qwant.log 2>&1
-		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> /srv/scripts/$mots_clefs.data
-		cat /srv/scripts/$mots_clefs.tmp | sed '/^$/d' >> /srv/scripts/BDD_veille.data
-		rm /srv/scripts/$mots_clefs.tmp >>/srv/scripts/alert_qwant.log 2>&1
+		cat $mots_clefs.tmp | sort > tmp
+		cat BDD_veille.mail | sort >> tmp
+		cat BDD_veille.data | sort >> tmp
+		cat tmp | sort | uniq -d > tmp.tmp
+	        rm tmp >>alert_qwant.log 2>&1
+ 		cat $mots_clefs.tmp >> tmp.tmp
+        	cat tmp.tmp | sort | uniq -u > $mots_clefs.tmp
+	        rm tmp.tmp >>alert_qwant.log 2>&1
+		cat $mots_clefs.tmp | sed '/^$/d' >> $mots_clefs.data
+		cat $mots_clefs.tmp | sed '/^$/d' >> BDD_veille.data
+		rm $mots_clefs.tmp >>alert_qwant.log 2>&1
 	done
 else
-	apt-get install $install >>/srv/scripts/alert_qwant.log 2>&1 #installation de curl
-	echo "Le logiciel $install a été installé" >> /srv/scripts/alert_qwant.log
+	apt-get install $install >>alert_qwant.log 2>&1 #installation de curl
+	echo "Le logiciel $install a été installé" >> alert_qwant.log
 
-	echo "Fin de l'exécution du programme avec une erreur critique, veuillez relancer" >> /srv/scripts/alert_qwant.log
+	echo "Fin de l'exécution du programme avec une erreur critique, veuillez relancer" >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Le logiciel $install a été installé"; fi
 	if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme avec une erreur critique, veuillez relancer"; fi
 fi
 
 #Boucle pour le comptage des lignes du fichier de liens
-cat /srv/scripts/BDD_veille.data | while read line
+cat BDD_veille.data | while read line
 do
        	((nbline++))
-	echo "$nbline" > /srv/scripts/nbline.tmp
+	echo "$nbline" > nbline.tmp
 done
 
 #Test de la présence du fichier nbline.tmp
-if [ -f "/srv/scripts/nbline.tmp" ] 
+if [ -f "nbline.tmp" ] 
 then
-	nbline=$(cat /srv/scripts/nbline.tmp)
+	nbline=$(cat nbline.tmp)
 fi
 
 #Test pour le nombre maximum de lien
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
 then
 	#Mise en forme du MEF
-	echo '<!doctype html>' >> /srv/scripts/BDD_veille.mef
-	echo '<html lang="fr">' >> /srv/scripts/BDD_veille.mef
-	echo '<head>' >> /srv/scripts/BDD_veille.mef
-	echo '<meta charset="utf-8">' >> /srv/scripts/BDD_veille.mef
-	echo '<title>[Alert Qwant] Newsletter</title>' >> /srv/scripts/BDD_veille.mef
-	echo '<link rel="stylesheet" href="style.css">' >> /srv/scripts/BDD_veille.mef
-	echo '</head>' >> /srv/scripts/BDD_veille.mef
-	echo '<body>' >> /srv/scripts/BDD_veille.mef
-	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> /srv/scripts/BDD_veille.mef
-	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> /srv/scripts/BDD_veille.mef
+	echo '<!doctype html>' >> BDD_veille.mef
+	echo '<html lang="fr">' >> BDD_veille.mef
+	echo '<head>' >> BDD_veille.mef
+	echo '<meta charset="utf-8">' >> BDD_veille.mef
+	echo '<title>[Alert Qwant] Newsletter</title>' >> BDD_veille.mef
+	echo '<link rel="stylesheet" href="style.css">' >> BDD_veille.mef
+	echo '</head>' >> BDD_veille.mef
+	echo '<body>' >> BDD_veille.mef
+	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> BDD_veille.mef
+	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> BDD_veille.mef
 	
-	cat /srv/scripts/BDD_veille.data | sort >> /srv/scripts/BDD_veille.mail
-	poids_BDD_mail=$(ls -lh /srv/scripts/BDD_veille.mail | sed s/'.*root root '/''/g | cut -d ' ' -f1)
-	cat /srv/scripts/Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
+	cat BDD_veille.data | sort >> BDD_veille.mail
+	poids_BDD_mail=$(ls -lh BDD_veille.mail | sed s/'.*root root '/''/g | cut -d ' ' -f1)
+	cat Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
 		mot_clef=$(echo $line | sed s/'+'/' '/g)
-		vide=$(cat /srv/scripts/$line.data)
+		vide=$(cat $line.data)
 		elem_comparaison="<br><br><b>""$mot_clef""<b><br>"
 		if [ "$vide" != "$elem_comparaison" ]
 		then
-			cat /srv/scripts/$line.data >> /srv/scripts/BDD_veille.mef
-			echo "" >> /srv/scripts/BDD_veille.mef
+			cat $line.data >> BDD_veille.mef
+			echo "" >> BDD_veille.mef
 		fi
 	done
 
-	cat /srv/scripts/BDD_veille.mef | sed s/'\n'/'<br>'/g > /srv/scripts/BDD_veilleMEF.tmp
-	cat /srv/scripts/BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > /srv/scripts/BDD_veille.mef
+	cat BDD_veille.mef | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
+	cat BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > BDD_veille.mef
 
-	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> /srv/scripts/BDD_veille.mef
-	echo '</body>' >> /srv/scripts/BDD_veille.mef
-	echo '</html>' >> /srv/scripts/BDD_veille.mef
+	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> BDD_veille.mef
+	echo '</body>' >> BDD_veille.mef
+	echo '</html>' >> BDD_veille.mef
 
 	if [ "$choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
 	then
-		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < /srv/scripts/BDD_veille.mef
-		echo "Un mail avec $nbline liens à été envoyé" >> /srv/scripts/alert_qwant.log
+		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < BDD_veille.mef
+		echo "Un mail avec $nbline liens à été envoyé" >> alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
         elif [ "$choix_mail_ou_fichier" = "fichier" ] || [ "$fichier" = "Activé" ]
 	then
-		cat /srv/scripts/BDD_veille.mef > $chemin_fichier/Newsletter.html
-		echo "La newsletter avec $nbline liens est consultable ici $chemin_fichier" >> /srv/scripts/alert_qwant.log
+		cat BDD_veille.mef > $chemin_fichier/Newsletter.html
+		echo "La newsletter avec $nbline liens est consultable ici $chemin_fichier" >> alert_qwant.log
                 if [ "$verbose" = "Activé" ]; then echo "La newsletter avec $nbline liens est consultable ici $chemin_fichier"; fi
 	else
-		echo "Choix mail ou fichier argument invalide" >> /srv/scripts/alert_qwant.log
+		echo "Choix mail ou fichier argument invalide" >> alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
 	fi
-	rm /srv/scripts/*.mef /srv/scripts/*.data /srv/scripts/*.tmp >>/srv/scripts/alert_qwant.log 2>&1
-        echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail" >> /srv/scripts/alert_qwant.log
-	echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+	rm *.mef *.data *.tmp >>alert_qwant.log 2>&1
+        echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail" >> alert_qwant.log
+	echo "Fin de l'exécution du programme" >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail"; fi
 	if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-	echo " " >> /srv/scripts/alert_qwant.log
+	echo " " >> alert_qwant.log
         exit 0 #Fin du programme
 fi
 
-echo "Le fichier de base de données de veille contient $nbline liens" >> /srv/scripts/alert_qwant.log
+echo "Le fichier de base de données de veille contient $nbline liens" >> alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Le fichier de base de données de veille contient $nbline liens"; fi
-rm /srv/scripts/*.tmp >>/srv/scripts/alert_qwant.log 2>&1
-echo "Fin de l'exécution du programme" >> /srv/scripts/alert_qwant.log
+rm *.tmp >>alert_qwant.log 2>&1
+echo "Fin de l'exécution du programme" >> alert_qwant.log
 if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
-echo " " >> /srv/scripts/alert_qwant.log
+echo " " >> alert_qwant.log
 exit 0 #Fin du programme
