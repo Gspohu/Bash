@@ -111,11 +111,12 @@ then
         echo "Nombre de liens récupéré par mot clef : 4" >> alert_qwant.conf
         echo "Nombre de liens envoyé par mail : 50" >> alert_qwant.conf
         echo "Une fois les liens récupérés, les envoyers par mail (tapez mail) ou les envoyers dans un fichier (tapez le/lien/absolu/du/fichier) :" >> alert_qwant.conf
-        echo "Adresse mail : adresse@mail.eu" >> alert_qwant.conf
+        echo "Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
 	echo "Chemin absolu du fichier :" >> alert_qwant.conf
+	echo "Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" 
 
-        echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à changer l'adresse mail." >> alert_qwant.log
-	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à changer l'adresse mail."; fi
+        echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
+	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer."; fi
         echo "Fin de l'exécution du programme" >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
 	echo " " >> alert_qwant.log
