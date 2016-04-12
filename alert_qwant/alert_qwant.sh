@@ -371,7 +371,7 @@ then
 		then
 			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
 			lien_sauv='   <\/a>< a href="https:\/\/cairn-devices.eu\/save_link?link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
-			echo $line | sed 's/<\/a>/'$lien_sauv'/g' >> BDD_veille.mef.tmp
+			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
 		fi
