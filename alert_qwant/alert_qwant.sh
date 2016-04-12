@@ -369,7 +369,7 @@ then
 	do
 		if [ "${line:0:2}" = "<a" ]
 		then
-			link=$(echo $line | cut -d '"' -f1)
+			link=$(echo $line | cut -d '"' -f1 | sed 's/\//\\\//g')
 			lien_sauv='   <\/a>< a href="https:\/\/cairn-devices.eu\/save_link?link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
 			echo $line | sed 's/<\/a>/'$lien_sauv'/g' >> BDD_veille.mef.tmp
 		else
