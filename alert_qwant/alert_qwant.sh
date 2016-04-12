@@ -18,8 +18,11 @@ then
 		#Option de mise à jour
         	if [ $1 = "--upgrade" ]
         	then
+			#création de la signature md5
+			openssl md5 alert_qwant.sh > sig.md5
 			#Récupération de la signature MD5 de la dernière version
                 	diff_maj=$(curl -s https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 | diff sig.md5 -)
+			rm sig.md5
 			if [ "$diff_maj" != "" ] 
 			then
 				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/alert_qwant.sh >>alert_qwant.log 2>&1
