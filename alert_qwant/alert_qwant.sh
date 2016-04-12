@@ -130,7 +130,8 @@ then
 
         echo 'Erreur : Votre liste de mots clefs est vide et a été créé automatiquement. Pensez à éditer le fichier Mots_clefs.list' >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Erreur : Votre liste de mots clefs est vide et a été créé automatiquement. Pensez à éditer le fichier Mots_clefs.list"; fi
-elif [ ! -f "BDD_veille.mail" ] # Test de la présence de la BDD des mails envoyés
+fi
+if [ ! -f "BDD_veille.mail" ] # Test de la présence de la BDD des mails envoyés
 then
 	#Création de la BDD_veille.mail
         echo 'Historique des liens envoyé par mail' >> BDD_veille.mail
