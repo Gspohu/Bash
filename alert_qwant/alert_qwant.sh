@@ -370,14 +370,14 @@ then
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-			lien_sauv='   <\/a>< a href="https:\/\/cairn-devices.eu\/save_link?link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+			lien_sauv='   <\/a><a href="https:\/\/cairn-devices.eu\/save_link?link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
 			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
 		fi
 	done
         cat BDD_veille.mef.tmp | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
-        cat BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > BDD_veille.mef
+        cat BDD_veilleMEF.tmp | sed s/'\/><\/a>'/'\/><\/a><br>'/g > BDD_veille.mef
 
 
 	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> BDD_veille.mef
