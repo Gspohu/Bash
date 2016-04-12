@@ -365,7 +365,7 @@ then
 
 	cat BDD_veille.mef | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
 	cat BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > BDD_veilleMEF2.tmp
-	cat BDD_veille.mef | sed s/'</a>'/'</a><a href="https://cairn-devices.eu" ><img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/ico_save.png" width="15"  alt="icon_save" /></a>'/g > BDD_veille.mef
+	cat BDD_veilleMEF2.tmp | sed s/'<\/a>'/'<\/a><a href="https:\/\/cairn-devices.eu" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="15"  alt="icon_save" \/><\/a>'/g > BDD_veille.mef
 
 	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> BDD_veille.mef
 	echo '</body>' >> BDD_veille.mef
