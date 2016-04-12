@@ -28,6 +28,7 @@ then
 				rm alert_qwant.sh sig.md5
 				mv /tmp/alert_qwant.sh alert_qwant.sh
 				mv /tmp/sig.md5 sig.md5
+				chmod +x alert_qwant.sh
 
 				echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour " >> alert_qwant.log
 				if [ "$verbose" = "Activé" ]; then echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour "; fi
