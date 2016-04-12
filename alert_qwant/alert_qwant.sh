@@ -26,11 +26,9 @@ then
 			if [ "$diff_maj" != "" ] 
 			then
 				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/alert_qwant.sh >>alert_qwant.log 2>&1
-				wget -q -P /tmp/ https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/sig.md5 >>alert_qwant.log 2>&1
-			
+				
 				rm alert_qwant.sh
 				mv /tmp/alert_qwant.sh alert_qwant.sh
-				mv /tmp/sig.md5 sig.md5
 				chmod +x alert_qwant.sh
 
 				echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour " >> alert_qwant.log
