@@ -90,7 +90,7 @@ if [ "$verbose" = "Activé" ]; then echo "Lancement alert_qwant.sh le $jour_heur
 ou_suis_je_home=$(pwd | cut -d\/ -f 2)
 ou_suis_je_proffondeur=$(pwd | grep -o /)
 
-if [ "$ou_sui_je_home" != "home" ] && [ "$ou_suis_je_proffondeur" != "/ /" ] #Vérification de l'existence du script alert_qwant.sh
+if [ "$ou_suis_je_home" != "home" ] && [ "$ou_suis_je_proffondeur" != "/ /" ] #Vérification de l'existence du script alert_qwant.sh
 then
         echo 'Erreur critique : Le script est mal placé. Il doit être placé à la racine de votre home'
         echo 'Erreur critique : Le script est mal placé. Il doit être placé à la racine de votre home' >> alert_qwant.log
