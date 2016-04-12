@@ -350,7 +350,7 @@ then
 	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> BDD_veille.mef
 	
 	cat BDD_veille.data | sort >> BDD_veille.mail
-	poids_BDD_mail=$(ls -lh BDD_veille.mail | sed s/'.*root root '/''/g | cut -d ' ' -f1)
+	poids_BDD_mail=$(ls -lh BDD_veille.mail | cut -d ' ' -f5)
 	cat Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
 	do
 		mot_clef=$(echo $line | sed s/'+'/' '/g)
