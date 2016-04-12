@@ -113,8 +113,8 @@ then
         echo "Une fois les liens récupérés, les envoyers par mail (tapez mail) ou les envoyers dans un fichier (tapez le/lien/absolu/du/fichier) :" >> alert_qwant.conf
         echo "Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
 	echo "Chemin absolu du fichier :" >> alert_qwant.conf
-	echo "Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" 
-
+	echo "Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" >> alert_qwant.conf 
+	echo "En cas d'activation du mode multi-utilisateurs listez ci-dessous les utilisateurs sous cette forme Pseudo : adresse@mail.eu : Chemin absolu du fichier" >> alert_qwant.conf
         echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer."; fi
         echo "Fin de l'exécution du programme" >> alert_qwant.log
@@ -363,7 +363,8 @@ then
 	done
 
 	cat BDD_veille.mef | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
-	cat BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > BDD_veille.mef
+	cat BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > BDD_veilleMEF2.tmp
+	cat BDD_veille.mef | sed s/'</a>'/'</a><a href="https://cairn-devices.eu" ><img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/ico_save.png" width="15"  alt="icon_save" /></a>'/g > BDD_veille.mef
 
 	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> BDD_veille.mef
 	echo '</body>' >> BDD_veille.mef
