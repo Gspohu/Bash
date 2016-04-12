@@ -365,19 +365,17 @@ then
 		fi
 	done
 
-	echo "" >  BDD_veille.mef
-
 	cat BDD_veille.mef | while read line # Lecture des liens ligne par ligne pour ajouter le paramètre en URL
 	do
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f1)
-			echo $line | sed s/'<\/a>'/'   <\/a><a href="https:\/\/cairn-devices.eu/save_link?link=$link" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'/g >> BDD_veille.mef
+			echo $line | sed s/'<\/a>'/'   <\/a><a href="https:\/\/cairn-devices.eu\/save_link?link=$link" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'/g >> BDD_veille.mef.tmp
 		else
-			echo $line >> BDD_veille.mef
+			echo $line >> BDD_veille.mef.tmp
 		fi
 	done
-        cat BDD_veille.mef | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
+        cat BDD_veille.mef.tmp | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
         cat BDD_veilleMEF.tmp | sed s/'<a href'/'<br><a href'/g > BDD_veille.mef
 
 
