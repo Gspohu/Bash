@@ -370,7 +370,8 @@ then
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f1)
-			echo $line | sed s/'<\/a>'/'   <\/a><a href="https:\/\/cairn-devices.eu\/save_link?link=$link" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'/g >> BDD_veille.mef.tmp
+			lien_sauv='   <\/a>< a href="https:\/\/cairn-devices.eu\/save_link?link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+			echo $line | sed s/'<\/a>'/$lien_sauv/g >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
 		fi
