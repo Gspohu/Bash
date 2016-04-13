@@ -108,15 +108,20 @@ then
 	#Création du fichier de configuration
         echo "###Fichier de configuration pour alert_qwant###" >> alert_qwant.conf
         echo "" >> alert_qwant.conf
-        echo "Fréquence de lancement de alert_qwant par jour (Le nombre d'heure par jours divisé par ce nombre doit être entier) : 12" >> alert_qwant.conf
-	echo "Langue de la veille : fr" >> alert_qwant.conf
-        echo "Nombre de liens récupéré par mot clef : 4" >> alert_qwant.conf
-        echo "Nombre de liens envoyé par mail : 50" >> alert_qwant.conf
-        echo "Une fois les liens récupérés, les envoyers par mail (tapez mail) ou les envoyers dans un fichier (tapez le/lien/absolu/du/fichier) :" >> alert_qwant.conf
-        echo "Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
-	echo "Chemin absolu du fichier :" >> alert_qwant.conf
-	echo "Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" >> alert_qwant.conf 
-	echo "En cas d'activation du mode multi-utilisateurs listez ci-dessous les utilisateurs sous cette forme Pseudo : adresse@mail.eu : Chemin absolu du fichier" >> alert_qwant.conf
+        echo "1- Fréquence de lancement de alert_qwant par jour (Le nombre d'heure par jours divisé par ce nombre doit être entier) : 12" >> alert_qwant.conf
+	echo "2- Langue de la veille : fr" >> alert_qwant.conf
+        echo "3- Nombre de liens par mot clef : 4" >> alert_qwant.conf
+        echo "4- Nombre limite de déclenchement du mail : 50" >> alert_qwant.conf
+        echo "5- Une fois les liens récupérés, les envoyers par mail (tapez mail) ou les envoyers dans un fichier (tapez le/lien/absolu/du/fichier) :" >> alert_qwant.conf
+        echo "6- Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
+	echo "7- Chemin absolu du fichier :" >> alert_qwant.conf
+	echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
+	echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
+	echo "10- Adresse web de la page PHP de sauvegarde des liens : www.monsite.eu/save_link" >> alert_qwant.conf
+	echo "11- Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" >> alert_qwant.conf
+	echo "" >> alert_qwant.conf 
+	echo "#En cas d'activation du mode multi-utilisateurs listez ci-dessous les utilisateurs sous cette forme :"  >> alert_qwant.conf
+	echo "> Pseudo : 2 : 3 : 4 : 5 : 6 : 7 : 8 <" >> alert_qwant.conf
         echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer."; fi
         echo "Fin de l'exécution du programme" >> alert_qwant.log
