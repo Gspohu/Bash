@@ -407,7 +407,7 @@ then
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-			lien_sauv='   <\/a><a href="https:\/\/cairn-devices.eu\/save_link?user='$user'&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_link?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
 			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
@@ -423,7 +423,7 @@ then
 
 	if [ "$choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
 	then
-		mail -s "$(echo -e "[Alert Qwant] Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < BDD_veille.mef
+		mail -s "$(echo -e "Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < BDD_veille.mef
 		echo "Un mail avec $nbline liens à été envoyé" >> alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
         elif [ "$choix_mail_ou_fichier" = "fichier" ] || [ "$fichier" = "Activé" ]
