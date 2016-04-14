@@ -4,7 +4,7 @@
 Stop_script()
 {
         echo "Fin de l'exécution du script le $jour_heure " >> alert_qwant.log
-        if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du script à $jour_heure :"; fi
+        if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du script à $jour_heure "; fi
         echo " " >> alert_qwant.log
         rm *.tmp >>alert_qwant.log 2>&1
         exit 0 #Fin du programme
@@ -462,19 +462,21 @@ indice="news-content" #Repère pour la div ou se trouve les résultats de la rec
 verif_installation=$(dpkg -s $install | grep Status) #Vérification que curl est installé
 nbline=0
 jour_heure=$(date +%d/%m/%y' à '%kh%M)
-cpt=1
+cpt=0
 i=0
 langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusXYZ' )
 user=""
 
 Log_write_timestrart
-
-while [ $# -ge $cpt ]
-do
-	Read_option "$1"
-	shift #Permet de décalage du prochain paramètre dans la variable $1
-	((cpt++))
-done
+if [ $# -ge 1 ]
+then
+	while [ $# -ge $cpt ]
+	do
+		Read_option "$1"
+		shift #Permet de décalage du prochain paramètre dans la variable $1
+		((cpt++))
+	done
+fi
 
 Check_dependancy
 Check_WhereamI
