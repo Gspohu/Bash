@@ -1,10 +1,10 @@
 #!/bin/bash
 
-
+#Met fin au script
 Stop_script()
 {
-        echo "Fin de l'exécution du programme" >> alert_qwant.log
-        if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du programme"; fi
+        echo "Fin de l'exécution du script à $jour_heure :" >> alert_qwant.log
+        if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du script à $jour_heure :"; fi
         echo " " >> alert_qwant.log
         rm *.tmp >>alert_qwant.log 2>&1
         exit 0 #Fin du programme
@@ -13,12 +13,6 @@ Stop_script()
 #Lecture des options
 Read_option()
 {
-if [ $# -ge 1 ]
-then
-	nboptions=$(echo $#)
-	while [ $cpt -lt $nboptions ] #Boucle de lecture des options
-	do
-	((cpt++))
 		#Option de mise à jour
         	if [ $1 = "--upgrade" ]
         	then
@@ -78,16 +72,12 @@ then
                 	if [ "$verbose" = "Activé" ]; then echo "Erreur : Option non reconnue"; fi
 			echo 'Erreur : Option non reconnue' >> alert_qwant.log
         	fi
-		shift #Permet de décalage du prochain paramètre dans la variable $1
-	done
-fi
 }
 
 #Ecrire dans le log l'heure du lancement
 Log_write_timestrart()
 {
 	echo "Lancement alert_qwant.sh le $jour_heure :" >> alert_qwant.log
-	if [ "$verbose" = "Activé" ]; then echo "Lancement alert_qwant.sh le $jour_heure :"; fi
 }
 
 #Vérification de l'emplacement du script
@@ -115,8 +105,8 @@ Check_sysfiles()
 	        echo "1- Fréquence de lancement de alert_qwant par jour (Le nombre d'heure par jours divisé par ce nombre doit être entier) : 12" >> alert_qwant.conf
 		echo "2- Langue de la veille : fr" >> alert_qwant.conf
 	        echo "3- Nombre de liens par mot clef : 4" >> alert_qwant.conf
-        	echo "4- Nombre limite de déclenchement du mail : 50" >> alert_qwant.conf
-	        echo "5- Une fois les liens récupérés, les envoyers par mail (tapez mail) ou les envoyers dans un fichier (tapez le/lien/absolu/du/fichier) :" >> alert_qwant.conf
+        	echo "4- Nombre limite de liens pour le déclenchement du mail : 50" >> alert_qwant.conf
+	        echo "5- Une fois les liens récupérés, les envoyers par mail (mail) ou les envoyers dans un fichier (fichier) :" >> alert_qwant.conf
         	echo "6- Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
 		echo "7- Chemin absolu du fichier :" >> alert_qwant.conf
 		echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
@@ -201,14 +191,25 @@ Check_BDD_veille()
 #Lecture du fichier de configuration
 Read_conffile()
 {
-	freq=$(cat alert_qwant.conf | grep -o Fréquence.* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-	nbliens_mots_clefs=$(cat alert_qwant.conf | grep -o "Nombre de liens récupéré".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-	nbliens_par_mail=$(cat alert_qwant.conf | grep -o "Nombre de liens envoyé".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-	choix_mail_ou_fichier=$(cat alert_qwant.conf | grep -o "Une fois".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-	adresse_mail=$(cat alert_qwant.conf | grep -o "Adresse".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	freq=$(cat alert_qwant.conf | grep -o "1-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	langue=$(cat alert_qwant.conf | grep -o "2-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	nbliens_mots_clefs=$(cat alert_qwant.conf | grep -o "3-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	nbliens_par_mail=$(cat alert_qwant.conf | grep -o "4-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	choix_mail_ou_fichier=$(cat alert_qwant.conf | grep -o "5-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	adresse_mail=$(cat alert_qwant.conf | grep -o "6-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	chemin_fichier=$(cat alert_qwant.conf | grep -o "7-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	enable_save=$(cat alert_qwant.conf | grep -o "8-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)	
+	adress_PHP_saver=$(cat alert_qwant.conf | grep -o "9-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	adress_web_PHP_saver=$(cat alert_qwant.conf | grep -o "10-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+	enable_multi=$(cat alert_qwant.conf | grep -o "11-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
+
+	if [ "$enable_multi" = "Activé" ]
+	then
+		echo "Multi enable" >> alert_qwant.log
+	fi
+
+	#Conversion de la fréquence pour la crontab
 	freq_cron=$((24/$freq))
-	chemin_fichier=$(cat alert_qwant.conf | grep -o "Chemin".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
-	langue=$(cat alert_qwant.conf | grep -o "Langue".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 }
 
 #Vérification des erreurs dans la récupération des variables du fichier de configuration
@@ -271,13 +272,14 @@ then
         if [ "$verbose" = "Activé" ]; then echo "Le dossier $chemin_fichier n'existe pas, il sera créé"; fi
 fi
 
-	#langue
+	#Langue
 	while [ $i -le 10 ]
 	do
 		if [ "$langue" = "${langue_dispo[$i]}" ]
 		then
 			i=11
 		elif [ $i -eq 10 ]
+		then
         		echo "La langue entré n'est pas disponible, la langue est passé en Français" >> alert_qwant.log
         		if [ "$verbose" = "Activé" ]; then echo "La langue entré n'est pas disponible, langue est passé en Français"; fi
 			langue="fr"
@@ -459,13 +461,18 @@ indice="news-content" #Repère pour la div ou se trouve les résultats de la rec
 verif_installation=$(dpkg -s $install | grep Status) #Vérification que curl est installé
 nbline=0
 jour_heure=$(date +%d/%m/%y' à '%kh%M)
-cpt=0
+cpt=1
 i=0
 langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusXYZ' )
 
 Log_write_timestrart
 
-Read_option
+while [ $# -ge $cpt ]
+do
+	Read_option "$1"
+	shift #Permet de décalage du prochain paramètre dans la variable $1
+	((cpt++))
+done
 
 Check_dependancy
 Check_WhereamI
