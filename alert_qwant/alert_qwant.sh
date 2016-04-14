@@ -3,7 +3,7 @@
 #Met fin au script
 Stop_script()
 {
-        echo "Fin de l'exécution du script à $jour_heure :" >> alert_qwant.log
+        echo "Fin de l'exécution du script le $jour_heure " >> alert_qwant.log
         if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du script à $jour_heure :"; fi
         echo " " >> alert_qwant.log
         rm *.tmp >>alert_qwant.log 2>&1
@@ -106,9 +106,9 @@ Check_sysfiles()
 		echo "2- Langue de la veille : fr" >> alert_qwant.conf
 	        echo "3- Nombre de liens par mot clef : 4" >> alert_qwant.conf
         	echo "4- Nombre limite de liens pour le déclenchement du mail : 50" >> alert_qwant.conf
-	        echo "5- Une fois les liens récupérés, les envoyers par mail (mail) ou les envoyers dans un fichier (fichier) :" >> alert_qwant.conf
+	        echo "5- Une fois les liens récupérés, les envoyers par mail (mail) ou les envoyers dans un fichier (fichier) : mail" >> alert_qwant.conf
         	echo "6- Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
-		echo "7- Chemin absolu du fichier :" >> alert_qwant.conf
+		echo "7- Chemin absolu du fichier : /home/alertqwant" >> alert_qwant.conf
 		echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
 		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
 		echo "10- Adresse web de la page PHP de sauvegarde des liens : www.monsite.eu/save_link" >> alert_qwant.conf
@@ -206,6 +206,7 @@ Read_conffile()
 	if [ "$enable_multi" = "Activé" ]
 	then
 		echo "Multi enable" >> alert_qwant.log
+		user="Singedumatin"
 	fi
 
 	#Conversion de la fréquence pour la crontab
@@ -406,7 +407,7 @@ then
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-			lien_sauv='   <\/a><a href="https:\/\/cairn-devices.eu\/save_link?link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+			lien_sauv='   <\/a><a href="https:\/\/cairn-devices.eu\/save_link?user='$user'&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
 			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
@@ -450,9 +451,9 @@ Print_weight_BDD_veille()
 	if [ "$verbose" = "Activé" ]; then echo "Le fichier de base de données de veille contient $nbline liens"; fi
 }
 
-############
-####Main####
-############
+####################
+########Main########
+####################
 
 
 #Initialisation des variables
@@ -464,6 +465,7 @@ jour_heure=$(date +%d/%m/%y' à '%kh%M)
 cpt=1
 i=0
 langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusXYZ' )
+user=""
 
 Log_write_timestrart
 
