@@ -527,12 +527,13 @@ Check_dependancy
 Check_WhereamI
 Check_sysfiles
 Check_BDD_veille
-Check_PHP_savepage
 
 Del_space_keywords
 
 Read_conffile
 Check_read_conffile
+
+Check_PHP_savepage
 
 Crontab_addrule
 
