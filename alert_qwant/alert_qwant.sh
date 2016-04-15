@@ -486,8 +486,8 @@ Check_PHP_savepage()
 		echo '{' >> $adress_PHP_saver_local
 		echo "\$user = htmlspecialchars(\$_GET['user']);" >> $adress_PHP_saver_local
 		echo "\$link = htmlspecialchars(\$_GET['link']);" >> $adress_PHP_saver_local
-		echo "\$comma = ','" >> $adress_PHP_saver_local
-		echo "\$eol = '\n'" >> $adress_PHP_saver_local
+		echo "\$comma = ',';" >> $adress_PHP_saver_local
+		echo '$eol = "\n";' >> $adress_PHP_saver_local
 		echo "\$BDD_noSQL = fopen('/home/alertqwant/BDD_links.nsq', 'a');" >> $adress_PHP_saver_local
 		echo 'fprintf( $BDD_noSQL, $user );' >> $adress_PHP_saver_local
 		echo 'fprintf( $BDD_noSQL, $comma );' >> $adress_PHP_saver_local
