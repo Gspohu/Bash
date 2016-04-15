@@ -110,7 +110,7 @@ Check_sysfiles()
         	echo "6- Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
 		echo "7- Chemin absolu du fichier : /home/alertqwant" >> alert_qwant.conf
 		echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
-		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /home/alertqwant/" >> alert_qwant.conf
+		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
 		echo "10- Adresse web de la page PHP de sauvegarde des liens : www.monsite.eu/save_link" >> alert_qwant.conf
 		echo "11- Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" >> alert_qwant.conf
 		echo "" >> alert_qwant.conf 
@@ -481,21 +481,21 @@ Check_PHP_savepage()
 		echo "La page PHP de sauvegarde des liens n'existe pas" >> alert_qwant.log
 	        if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens n'existe pas";fi
 		
-		echo '<?php' >> $adress_PHP_saver
-		echo "if (isset(\$_GET['user']) AND isset(\$_GET['link']))" >> $adress_PHP_saver
-		echo '{' >> $adress_PHP_saver
-		echo "\$user = htmlspecialchars(\$_GET['user']);" >> $adress_PHP_saver
-		echo "\$link = htmlspecialchars(\$_GET['link']);" >> $adress_PHP_saver
-		echo "\$BDD_noSQL = fopen('BDD_links.nsq', 'a');" >> $adress_PHP_saver
-		echo 'fprintf( $BDD_noSQL, $user );' >> $adress_PHP_saver
-		echo 'fprintf( $BDD_noSQL, $link );' >> $adress_PHP_saver
-		echo 'fclose($BDD_noSQL);' >> $adress_PHP_saver
-		echo 'echo "Le lien a bien ete sauvegarde, vous pouvez fermer la page"; ' >> $adress_PHP_saver
-		echo '}' >> $adress_PHP_saver
-		echo '?>' >> $adress_PHP_saver
+		echo '<?php' >> $adress_PHP_saver_local
+		echo "if (isset(\$_GET['user']) AND isset(\$_GET['link']))" >> $adress_PHP_saver_local
+		echo '{' >> $adress_PHP_saver_local
+		echo "\$user = htmlspecialchars(\$_GET['user']);" >> $adress_PHP_saver_local
+		echo "\$link = htmlspecialchars(\$_GET['link']);" >> $adress_PHP_saver_local
+		echo "\$BDD_noSQL = fopen('/home/alertqwant/BDD_links.nsq', 'a');" >> $adress_PHP_saver_local
+		echo 'fprintf( $BDD_noSQL, $user );' >> $adress_PHP_saver_local
+		echo 'fprintf( $BDD_noSQL, $link );' >> $adress_PHP_saver_local
+		echo 'fclose($BDD_noSQL);' >> $adress_PHP_saver_local
+		echo 'echo "Le lien a bien ete sauvegarde, vous pouvez fermer la page"; ' >> $adress_PHP_saver_local
+		echo '}' >> $adress_PHP_saver_local
+		echo '?>' >> $adress_PHP_saver_local
 
-		echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ls -s /home/alertqwant/save_link.php /var/www/save_link" >> alert_qwant.log
-                if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ln -s /home/alertqwant/save_links.php /var/www/save_links";fi
+		echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web" >> alert_qwant.log
+                if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web";fi
 
 	Stop_script
 	fi	
@@ -517,6 +517,7 @@ i=0 # Compteur
 cpt_user=0 # Compteur de lecture des profiles utilisateur
 langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusXYZ' )
 user="main"
+adress_PHP_saver_local="/home/alertqwant/"
 
 Log_write_timestrart
 while [ $# -ge $cpt ] && [ $# -ge 1 ]
