@@ -1,4 +1,4 @@
-Version : 0.01.6
+Version : 0.02.0
 Version type : Prototype
 Development : In progress
 Licence : GPLv3

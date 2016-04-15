@@ -207,7 +207,7 @@ Read_conffile()
 		echo "Mode multi-utilisateurs activé" >> alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Mode multi-utilisateurs activé"; fi
 		nbuser=$(cat alert_qwant.conf | grep -o "<".* | wc -l)
-		while [ $cpt_user -le $nbuser ] && [ "$enable_multi" = "Activé" ]
+		while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]
 		do
 			multi_pseudo[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \> -f 2 | cut -d \: -f 1 | sed s/' '/''/g )
 			multi_langue[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 2 | cut -d \: -f 2 | sed s/' '/''/g )
@@ -340,33 +340,38 @@ Check_dependancy()
 #Récupération des liens
 Search_links()
 {
-	#Boucle pour rechercher les liens pour chaque mot clef
-	cat Mots_clefs.tmp | while read line #Lecture ligne par ligne
-	do
-        	mots_clefs=$line
+	if [ "$enable_multi" = "Activé" ]
+	then
+		echo "singe"	
+	else
+		#Boucle pour rechercher les liens pour chaque mot clef
+		cat Mots_clefs.tmp | while read line #Lecture ligne par ligne
+		do
+        		mots_clefs=$line
+	
+			#Inscription de l'entête
+			if [ ! -f "$mots_clefs.data" ]
+			then
+				echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > $mots_clefs.data
+			fi
 
-		#Inscription de l'entête
-		if [ ! -f "$mots_clefs.data" ]
-		then
-			 echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > $mots_clefs.data
-		fi
+        		moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=$langue" #Lien du moteur de recherche
+			curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> $mots_clefs.tmp #Récupération des liens sur le moteur de recherche
 
-        	moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=$langue" #Lien du moteur de recherche
-		curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> $mots_clefs.tmp #Récupération des liens sur le moteur de recherche
-
-		#Vérification des doublons
-		cat $mots_clefs.tmp | sort > tmp
-		cat BDD_veille.mail | sort >> tmp
-		cat BDD_veille.data | sort >> tmp
-		cat tmp | sort | uniq -d > tmp.tmp
-	        rm tmp >>alert_qwant.log 2>&1
- 		cat $mots_clefs.tmp >> tmp.tmp
-        	cat tmp.tmp | sort | uniq -u > $mots_clefs.tmp
-	        rm tmp.tmp >>alert_qwant.log 2>&1
-		cat $mots_clefs.tmp | sed '/^$/d' >> $mots_clefs.data
-		cat $mots_clefs.tmp | sed '/^$/d' >> BDD_veille.data
-		rm $mots_clefs.tmp >>alert_qwant.log 2>&1
-	done
+			#Vérification des doublons
+			cat $mots_clefs.tmp | sort > tmp
+			cat BDD_veille.mail | sort >> tmp
+			cat BDD_veille.data | sort >> tmp
+			cat tmp | sort | uniq -d > tmp.tmp
+	  	        rm tmp >>alert_qwant.log 2>&1
+ 			cat $mots_clefs.tmp >> tmp.tmp
+        		cat tmp.tmp | sort | uniq -u > $mots_clefs.tmp
+		        rm tmp.tmp >>alert_qwant.log 2>&1
+			cat $mots_clefs.tmp | sed '/^$/d' >> $mots_clefs.data
+			cat $mots_clefs.tmp | sed '/^$/d' >> BDD_veille.data
+			rm $mots_clefs.tmp >>alert_qwant.log 2>&1
+		done
+	fi
 }
 
 #Boucle pour le comptage des lignes de la base de donnée de liens
@@ -473,7 +478,15 @@ Check_PHP_savepage()
 		echo "La page PHP de sauvegarde des liens n'existe pas" >> alert_qwant.log
 	        if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens n'existe pas";fi
 		
-		echo "PHP" >> $adress_PHP_saver
+		echo "<?php" >> $adress_PHP_saver
+		echo "if (isset($_GET['user']) AND isset($_GET['link']))" >> $adress_PHP_saver
+		echo "{" >> $adress_PHP_saver
+		echo "$user = htmlspecialchars($_GET['user']);" >> $adress_PHP_saver
+		echo "$link = htmlspecialchars($_GET['link']);" >> $adress_PHP_saver
+		echo "$BDD_noSQL = fopen('BDD_links.nsq', 'a');" >> $adress_PHP_saver
+		echo "fprintf( $BDD_noSQL, $user ":" $link );" >> $adress_PHP_saver
+		echo "fclose($BDD_noSQL);" >> $adress_PHP_saver
+		echo "?>" >> $adress_PHP_saver
 
 		echo "La page PHP de sauvegarde des liens à été créé" >> alert_qwant.log
                 if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé";fi    		fi	
@@ -492,10 +505,9 @@ nbline=0
 jour_heure=$(date +%d/%m/%y' à '%kh%M)
 cpt=0 # Compteur de lecture des options
 i=0 # Compteur
-cpt_user=1 # Compteur de lecture des profiles utilisateur
+cpt_user=0 # Compteur de lecture des profiles utilisateur
 langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusXYZ' )
 user=""
-flag_user="<"
 
 Log_write_timestrart
 while [ $# -ge $cpt ] && [ $# -ge 1 ]
