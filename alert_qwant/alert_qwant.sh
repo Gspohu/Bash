@@ -427,7 +427,7 @@ then
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
 			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
@@ -507,7 +507,7 @@ cpt=0 # Compteur de lecture des options
 i=0 # Compteur
 cpt_user=0 # Compteur de lecture des profiles utilisateur
 langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusXYZ' )
-user=""
+user="main"
 
 Log_write_timestrart
 while [ $# -ge $cpt ] && [ $# -ge 1 ]
