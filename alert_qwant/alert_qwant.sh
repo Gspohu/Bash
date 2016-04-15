@@ -482,14 +482,16 @@ Check_PHP_savepage()
 	        if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens n'existe pas";fi
 		
 		echo '<?php' >> $adress_PHP_saver
-		echo "if (isset(\$_GET[\'user\']) AND isset(\$_GET[\'link\']))" >> $adress_PHP_saver
+		echo "if (isset(\$_GET['user']) AND isset(\$_GET['link']))" >> $adress_PHP_saver
 		echo '{' >> $adress_PHP_saver
-		echo "\$user = htmlspecialchars(\$_GET[\'user\']);" >> $adress_PHP_saver
-		echo "\$link = htmlspecialchars(\$_GET[\'link\']);" >> $adress_PHP_saver
-		echo "\$BDD_noSQL = fopen(\'BDD_links.nsq\', \'a\');" >> $adress_PHP_saver
-		echo 'fprintf( $BDD_noSQL, $user \":\" $link );' >> $adress_PHP_saver
+		echo "\$user = htmlspecialchars(\$_GET['user']);" >> $adress_PHP_saver
+		echo "\$link = htmlspecialchars(\$_GET['link']);" >> $adress_PHP_saver
+		echo "\$BDD_noSQL = fopen('BDD_links.nsq', 'a');" >> $adress_PHP_saver
+		echo 'fprintf( $BDD_noSQL, $user );' >> $adress_PHP_saver
+		echo 'fprintf( $BDD_noSQL, $link );' >> $adress_PHP_saver
 		echo 'fclose($BDD_noSQL);' >> $adress_PHP_saver
-		echo 'echo \"Le lien a bien ete sauvegarde, vous pouvez fermer la page\"; ' >> $adress_PHP_saver
+		echo 'echo "Le lien a bien ete sauvegarde, vous pouvez fermer la page"; ' >> $adress_PHP_saver
+		echo '}' >> $adress_PHP_saver
 		echo '?>' >> $adress_PHP_saver
 
 		echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ls -s /home/alertqwant/save_link.php /var/www/save_link" >> alert_qwant.log
