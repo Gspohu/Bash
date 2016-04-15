@@ -492,7 +492,8 @@ Check_PHP_savepage()
 		echo "?>" >> $adress_PHP_saver
 
 		echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ls -s /home/alertqwant/save_link.php /var/www/save_link" >> alert_qwant.log
-                if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ls -s /home/alertqwant/save_link.php /var/www/save_link";fi    		fi	
+                if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ls -s /home/alertqwant/save_link.php /var/www/save_link";fi
+	fi	
 
 	Stop_script
 }
@@ -526,6 +527,7 @@ Check_dependancy
 Check_WhereamI
 Check_sysfiles
 Check_BDD_veille
+Check_PHP_savepage
 
 Del_space_keywords
 
