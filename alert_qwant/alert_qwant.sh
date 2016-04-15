@@ -108,7 +108,7 @@ Check_sysfiles()
         	echo "4- Nombre limite de liens pour le déclenchement du mail : 50" >> alert_qwant.conf
 	        echo "5- Une fois les liens récupérés, les envoyers par mail (mail) ou les envoyers dans un fichier (fichier) : mail" >> alert_qwant.conf
         	echo "6- Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
-		echo "7- Chemin absolu du fichier : /home/alertqwant" >> alert_qwant.conf
+		echo "7- Chemin absolu du fichier : /home/alertqwant/" >> alert_qwant.conf
 		echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
 		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
 		echo "10- Adresse web de la page PHP de sauvegarde des liens : www.monsite.eu/save_link" >> alert_qwant.conf
@@ -517,7 +517,7 @@ i=0 # Compteur
 cpt_user=0 # Compteur de lecture des profiles utilisateur
 langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusXYZ' )
 user="main"
-adress_PHP_saver_local="/home/alertqwant/"
+adress_PHP_saver_local="/home/alertqwant/save_links.php"
 
 Log_write_timestrart
 while [ $# -ge $cpt ] && [ $# -ge 1 ]
