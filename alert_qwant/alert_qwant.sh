@@ -430,7 +430,7 @@ then
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
 			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
@@ -493,6 +493,7 @@ Check_PHP_savepage()
 		echo 'echo "Le lien a bien ete sauvegarde, vous pouvez fermer la page"; ' >> $adress_PHP_saver_local
 		echo '}' >> $adress_PHP_saver_local
 		echo '?>' >> $adress_PHP_saver_local
+		touch BDD_links.nsq
 
 		echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web" >> alert_qwant.log
                 if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web";fi
