@@ -110,7 +110,7 @@ Check_sysfiles()
         	echo "6- Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
 		echo "7- Chemin absolu du fichier : /home/alertqwant" >> alert_qwant.conf
 		echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
-		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
+		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /home/alertqwant/" >> alert_qwant.conf
 		echo "10- Adresse web de la page PHP de sauvegarde des liens : www.monsite.eu/save_link" >> alert_qwant.conf
 		echo "11- Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" >> alert_qwant.conf
 		echo "" >> alert_qwant.conf 
@@ -204,22 +204,25 @@ Read_conffile()
 	adress_web_PHP_saver=$(cat alert_qwant.conf | grep -o "10-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 	enable_multi=$(cat alert_qwant.conf | grep -o "11-".* | head -n 1 | cut -d \:  -f 2 |cut -d\  -f 2)
 
+	if [ "$enable_multi" = "Activé" ]
+	then
 		echo "Mode multi-utilisateurs activé" >> alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Mode multi-utilisateurs activé"; fi
-		nbuser=$(cat alert_qwant.conf | grep -o "<".* | wc -l)
-		while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]
-		do
-			multi_pseudo[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \> -f 2 | cut -d \: -f 1 | sed s/' '/''/g )
-			multi_langue[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 2 | cut -d \: -f 2 | sed s/' '/''/g )
-			multi_nbliens_mots_clefs[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 3 | cut -d \: -f 3 | sed s/' '/''/g )
-			multi_nbliens_par_mail[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 4 | cut -d \: -f 4 | sed s/' '/''/g )
-			multi_choix_mail_ou_fichier[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 5 | cut -d \: -f 5 | sed s/' '/''/g )
-			multi_adresse_mail[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 6 | cut -d \: -f 6 | sed s/' '/''/g )
-			multi_chemin_fichier[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 7 | cut -d \: -f 7 | sed s/' '/''/g )
-			multi_enable_save[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 8 | cut -d \< -f 1 | sed s/' '/''/g )
+	fi
+	nbuser=$(cat alert_qwant.conf | grep -o "<".* | wc -l)
+	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]
+	do
+		multi_pseudo[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \> -f 2 | cut -d \: -f 1 | sed s/' '/''/g )
+		multi_langue[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 2 | cut -d \: -f 2 | sed s/' '/''/g )
+		multi_nbliens_mots_clefs[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 3 | cut -d \: -f 3 | sed s/' '/''/g )
+		multi_nbliens_par_mail[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 4 | cut -d \: -f 4 | sed s/' '/''/g )
+		multi_choix_mail_ou_fichier[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 5 | cut -d \: -f 5 | sed s/' '/''/g )
+		multi_adresse_mail[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 6 | cut -d \: -f 6 | sed s/' '/''/g )
+		multi_chemin_fichier[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 7 | cut -d \: -f 7 | sed s/' '/''/g )
+		multi_enable_save[$cpt_user]=$(cat alert_qwant.conf | grep -o "<""$cpt_user".* | cut  -d \: -f 8 | cut -d \< -f 1 | sed s/' '/''/g )
 
-			((cpt_user++))
-		done
+		((cpt_user++))
+	done
 
 	#Conversion de la fréquence pour la crontab
 	freq_cron=$((24/$freq))
@@ -427,7 +430,7 @@ then
 		if [ "${line:0:2}" = "<a" ]
 		then
 			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
 			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
 		else
 			echo $line >> BDD_veille.mef.tmp
@@ -488,8 +491,10 @@ Check_PHP_savepage()
 		echo "fclose($BDD_noSQL);" >> $adress_PHP_saver
 		echo "?>" >> $adress_PHP_saver
 
-		echo "La page PHP de sauvegarde des liens à été créé" >> alert_qwant.log
-                if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé";fi    		fi	
+		echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ls -s /home/alertqwant/save_link.php /var/www/save_link" >> alert_qwant.log
+                if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à mettre un lien symbolique vers $adress_PHP_saver sur votre serveur web, avec la commande ls -s /home/alertqwant/save_link.php /var/www/save_link";fi    		fi	
+
+	Stop_script
 }
 
 ####################
