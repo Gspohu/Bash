@@ -108,7 +108,7 @@ Check_sysfiles()
 	        echo "3- Nombre de liens par mot clef : 4" >> alert_qwant.conf
         	echo "4- Nombre limite de liens pour le déclenchement du mail : 50" >> alert_qwant.conf
 	        echo "5- Une fois les liens récupérés, les envoyers par mail (mail) ou les envoyers dans un fichier (fichier) : mail" >> alert_qwant.conf
-        	echo "6- Adresse mail (séparé par une virgule) : adresse@mail.eu" >> alert_qwant.conf
+        	echo "6- Adresse mail : adresse@mail.eu" >> alert_qwant.conf
 		echo "7- Chemin absolu du fichier : /home/alertqwant/" >> alert_qwant.conf
 		echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
 		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
@@ -118,8 +118,8 @@ Check_sysfiles()
 		echo "#En cas d'activation du mode multi-utilisateurs listez ci-dessous les utilisateurs sous cette forme :"  >> alert_qwant.conf
 		echo "<0> Pseudo0 : 2 : 3 : 4 : 5 : 6 : 7 : 8 <" >> alert_qwant.conf
 		echo "<1> Pseudo1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 <" >> alert_qwant.conf
-	        echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
-		if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf dans , avec les paramètres de bases. Pensez à l'éditer."; fi
+	        echo "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
+		if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer."; fi
 	        Stop_script
 	fi
 
@@ -186,10 +186,10 @@ Check_keywords_lists()
 		filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""mots_clefs.tmp"
 		if [ ! -f "$filename_keywords_list" ]
 		then
-			echo "Qwant" >> $filenane_keywords_list
+			echo "Qwant" >> $filename_keywords_list
 
-        	        echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'exite pas elle a été créé automatiquement. Pensez à éditer le fichier $filename_keywords_list" >> alert_qwant.log
-	                if [ "$verbose" = "Activé" ]; then echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'exite pas elle a été créé automatiquement. Pensez à éditer le fichier $filename_keywords_list"; fi
+        	        echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list" >> alert_qwant.log
+	                if [ "$verbose" = "Activé" ]; then echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list"; fi
 			Stop="O"
 		else
 			cat $filename_keywords_list | sed s/' '/'+'/g > $filename_keywords_list_tmp
@@ -366,7 +366,7 @@ Check_dependancy()
 }
 
 #Vérification de l'existance des fichiers de BDD 
-Check_keywords_files()
+Check_BBD_files()
 {
 	cpt_user=0
 	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]
@@ -555,7 +555,7 @@ Creat_finaldoc()
                         	        if [ "${line:0:2}" = "<a" ]
                                 	then
                                         	link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-                                        	lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+                                        	lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$multi_pseudo[$cpt_user]'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
                                       		echo $line | sed "s/<\/a>/$lien_sauv/g" >> $BDD_veille_MEFtmp_by_user
                                 	else
                                         	echo $line >> $BDD_veille_MEFtmp_by_user
@@ -649,7 +649,7 @@ Creat_finaldoc()
 		if [ "$multi_choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
 		then
 			mail -s "$(echo -e "Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < BDD_veille.mef
-			echo "Un mail avec $nbline liens à été envoyé" >> alert_qwant.log
+			echo "Un mail avec $nbline liens à été envoyé à $adresse_mail" >> alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
 	        elif [ "$choix_mail_ou_fichier" = "fichier" ] || [ "$fichier" = "Activé" ]
 		then
@@ -746,6 +746,7 @@ Read_conffile
 Check_read_conffile
 
 Check_keywords_lists
+Check_BBD_files
 
 Check_PHP_savepage
 
