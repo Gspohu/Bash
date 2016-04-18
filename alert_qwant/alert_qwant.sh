@@ -72,6 +72,7 @@ Read_option()
                 	if [ "$verbose" = "Activé" ]; then echo "Erreur : Option non reconnue"; fi
 			echo 'Erreur : Option non reconnue' >> alert_qwant.log
         	fi
+if [ "$verbose" = "Activé" ]; then echo "Lecture des options.......Fait"; fi
 }
 
 #Ecrire dans le log l'heure du lancement
@@ -92,6 +93,7 @@ Check_WhereamI()
         	echo "Erreur critique : Le script est mal placé. Il doit être placé à la racine du home de l\'utilisateur alertqwant" >> alert_qwant.log
 		Stop_script
 	fi
+if [ "$verbose" = "Activé" ]; then echo "Vérification de l'emplacement.......Fait"; fi
 }
 
 #Vérification de la présence des fichiers systèmes
@@ -173,7 +175,8 @@ Check_sysfiles()
 
 		echo 'Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant' >> alert_qwant.log
 		if [ "$verbose" = "Activé" ]; then echo "Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant"; fi
-fi
+	fi
+if [ "$verbose" = "Activé" ]; then echo "Vérification des fichiers systèmes.......Fait"; fi
 }
 
 #Vérification et création des listes de mots clefs pour chaque utilisateurs et suppression des espaces
@@ -182,8 +185,8 @@ Check_keywords_lists()
 	cpt_user=0
 	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]	
 	do
-		filename_keywords_list="${multi_pseudo[$cpt_user]}""mots_clefs.list"
-		filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""mots_clefs.tmp"
+		filename_keywords_list="${multi_pseudo[$cpt_user]}""_""mots_clefs.list"
+		filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""_""mots_clefs.tmp"
 		if [ ! -f "$filename_keywords_list" ]
 		then
 			echo "Qwant" >> $filename_keywords_list
@@ -203,6 +206,7 @@ Check_keywords_lists()
 	fi
 
 	cat Mots_clefs.list | sed s/' '/'+'/g > Mots_clefs.tmp
+if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance de la liste des mots clefs pour chaque utilisateur.......Fait"; fi
 }
 
 #Création de BDD_veille.data pour permettre la comparaison entre les liens des différents mots clefs
@@ -212,6 +216,7 @@ Check_BDD_veille()
 	then
 		touch BDD_veille.data >> alert_qwant.log 2>&1
 	fi
+if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance de BDD_veille.data.......Fait"; fi
 }
 
 #Lecture du fichier de configuration
@@ -254,6 +259,7 @@ Read_conffile()
 
 	#Concaténation du nom de la page PHP de sauvegarde des liens
 	adress_PHP_saver="$adress_PHP""save_links.php"
+if [ "$verbose" = "Activé" ]; then echo "Lecture du fichier de configuration.......Fait"; fi
 }
 
 #Vérification des erreurs dans la récupération des variables du fichier de configuration
@@ -331,6 +337,7 @@ fi
 			((i++))
 		fi
 	done
+if [ "$verbose" = "Activé" ]; then echo "Vérification des options de configurations.......Fait"; fi
 }
 
 #Mise en place du lancement automatique avec cron
@@ -351,6 +358,7 @@ Crontab_addrule()
 	else	
 		rm /tmp/crontab_tmp.tmp >>alert_qwant.log 2>&1
 	fi
+if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance d'un règle crontab.......Fait"; fi
 }
 
 #Vérification de l'installation des dépendance
@@ -362,7 +370,7 @@ Check_dependancy()
 		echo "Certaines dépendance ne sont pas satisfaitent" >> alert_qwant.log
 		Stop_script
 	fi
-
+if [ "$verbose" = "Activé" ]; then echo "Vérification des dépendance.......Fait"; fi
 }
 
 #Vérification de l'existance des fichiers de BDD 
@@ -371,8 +379,8 @@ Check_BBD_files()
 	cpt_user=0
 	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]
 	do
-		 BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
-                 BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
+		BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
+                BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
 
 		if [ ! -f "$BDD_veille_mail_by_user" ]
 		then
@@ -382,8 +390,9 @@ Check_BBD_files()
 			touch $BDD_veille_data_by_user >> alert_qwant.log 2>&1
         	fi
 		
-		(($cpt_user++))
+		((cpt_user++))
 	done
+if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance des BDD_veille pour chaque utilisateur.......Fait"; fi
 }
 
 #Récupération des liens
@@ -461,6 +470,7 @@ Search_links()
 			rm $mots_clefs.tmp >>alert_qwant.log 2>&1
 		done
 	fi
+if [ "$verbose" = "Activé" ]; then echo "Recherche des liens.......Fait"; fi
 }
 
 #Boucle pour le comptage des lignes de la base de donnée de liens
@@ -504,6 +514,7 @@ Check_howmany_links()
 			nbline=$(cat nbline.tmp)
 		fi
 	fi
+if [ "$verbose" = "Activé" ]; then echo "Compte du nombre de liens.......Fait"; fi
 }
 
 #Génération du document final
@@ -511,7 +522,7 @@ Creat_finaldoc()
 {
 	if [ "$enable_multi" = "Activé" ]
 	then
-		nbuser=0
+		cpt_user=0
                 while [ $cpt_user -lt $nbuser ]
                 do
 			BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
@@ -667,6 +678,7 @@ Creat_finaldoc()
 		if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail"; fi
         	Stop_script
 	fi
+if [ "$verbose" = "Activé" ]; then echo "Création du document final.......Fait"; fi
 }
 
 
@@ -675,6 +687,7 @@ Print_weight_BDD_veille()
 {
 	echo "Le fichier de base de données de veille contient $nbline liens" >> alert_qwant.log
 	if [ "$verbose" = "Activé" ]; then echo "Le fichier de base de données de veille contient $nbline liens"; fi
+if [ "$verbose" = "Activé" ]; then echo "Récupération du poids de la BDD_veille.mail.......Fait"; fi
 }
 
 Check_PHP_savepage()
@@ -708,6 +721,7 @@ Check_PHP_savepage()
 
 	Stop_script
 	fi	
+if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance de la page PHP de sauvegarde des liens.......Fait"; fi
 }
 
 ####################
@@ -745,8 +759,8 @@ Check_BDD_veille
 Read_conffile
 Check_read_conffile
 
-Check_keywords_lists
 Check_BBD_files
+Check_keywords_lists
 
 Check_PHP_savepage
 
@@ -755,7 +769,16 @@ Crontab_addrule
 Search_links
 Check_howmany_links
 
-if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
+cpt_user=0
+while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ] 
+do
+	if [ $nbline[$cpt_user] -ge $multi_nbliens_par_mail[$cpt_user] ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
+	then
+		Creat_finaldoc
+	fi
+done
+
+if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ] && [ "$enable_multi" = "Désactivé" ]
 then
 	Creat_finaldoc
 fi
