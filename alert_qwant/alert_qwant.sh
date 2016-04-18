@@ -75,7 +75,7 @@ Read_option()
 }
 
 #Ecrire dans le log l'heure du lancement
-Log_write_timestrart()
+Write_timestart_inlog()
 {
 	echo "Lancement alert_qwant.sh le $jour_heure :" >> alert_qwant.log
 }
@@ -83,13 +83,13 @@ Log_write_timestrart()
 #Vérification de l'emplacement du script
 Check_WhereamI()
 {
-	ou_suis_je_home=$(pwd | cut -d\/ -f 2)
-	ou_suis_je_proffondeur=$(pwd | grep -o /)
+	ou_suis_je=$(pwd)
 
-	if [ "$ou_suis_je_home" != "home" ] && [ "$ou_suis_je_proffondeur" != "/ /" ] #Vérification de l'existence du script alert_qwant.sh
+	# Vérification de l'existence du script alert_qwant.sh
+	if [ "$ou_suis_je" != "/home/alertqwant" ]
 	then
-        	echo 'Erreur critique : Le script est mal placé. Il doit être placé à la racine de votre home'
-        	echo 'Erreur critique : Le script est mal placé. Il doit être placé à la racine de votre home' >> alert_qwant.log
+        	echo "Erreur critique : Le script est mal placé. Il doit être placé à la racine du home de l\'utilisateur alertqwant"
+        	echo "Erreur critique : Le script est mal placé. Il doit être placé à la racine du home de l\'utilisateur alertqwant" >> alert_qwant.log
 		Stop_script
 	fi
 }
@@ -97,7 +97,8 @@ Check_WhereamI()
 #Vérification de la présence des fichiers systèmes
 Check_sysfiles()
 {
-	if [ ! -f "alert_qwant.conf" ] # Test de la présence du fichier de configuration
+	# Test de la présence du fichier de configuration
+	if [ ! -f "alert_qwant.conf" ]
 	then
 		#Création du fichier de configuration
 	        echo "###Fichier de configuration pour alert_qwant###" >> alert_qwant.conf
@@ -122,7 +123,8 @@ Check_sysfiles()
 	        Stop_script
 	fi
 
-	if [ ! -f "Mots_clefs.list" ] # Test de la présence de la liste des mots clefs 
+	# Test de la présence de la liste des mots clefs
+	if [ ! -f "Mots_clefs.list" ] 
 	then
 		#Création de la liste des mots clefs
 	        echo 'Qwant' >> Mots_clefs.list
@@ -174,9 +176,32 @@ Check_sysfiles()
 fi
 }
 
-#Suppression des espaces dans le fichier contenant les mots clefs
-Del_space_keywords()
+#Vérification et création des listes de mots clefs pour chaque utilisateurs et suppression des espaces
+Check_keywords_lists()
 {
+	cpt_user=0
+	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]	
+	do
+		filename_keywords_list="${multi_pseudo[$cpt_user]}""mots_clefs.list"
+		filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""mots_clefs.tmp"
+		if [ ! -f "$filename_keywords_list" ]
+		then
+			echo "Qwant" >> $filenane_keywords_list
+
+        	        echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'exite pas elle a été créé automatiquement. Pensez à éditer le fichier $filename_keywords_list" >> alert_qwant.log
+	                if [ "$verbose" = "Activé" ]; then echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'exite pas elle a été créé automatiquement. Pensez à éditer le fichier $filename_keywords_list"; fi
+			Stop="O"
+		else
+			cat $filename_keywords_list | sed s/' '/'+'/g > $filename_keywords_list_tmp
+		fi
+		((cpt_user++))
+	done
+
+	if [ "$Stop" = "O" ]
+	then
+		Stop_script
+	fi
+
 	cat Mots_clefs.list | sed s/' '/'+'/g > Mots_clefs.tmp
 }
 
@@ -234,26 +259,26 @@ Read_conffile()
 #Vérification des erreurs dans la récupération des variables du fichier de configuration
 Check_read_conffile()
 {
-#freq
-test_entier=$(($freq*$freq_cron))
-if [ $test_entier -ne 24 ]
-then
-	echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-        if [ "$verbose" = "Activé" ]; then echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger"; fi
-fi
+	#freq
+	test_entier=$(($freq*$freq_cron))
+	if [ $test_entier -ne 24 ]
+	then
+		echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
+        	if [ "$verbose" = "Activé" ]; then echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger"; fi
+	fi
 
-#nbliens_mots_clefs
-if [ $nbliens_mots_clefs -eq 0 ]
-then
-	echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-        if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
-	nbliens_mots_clefs=4
-elif [ $nbliens_mots_clefs -gt 10 ]
-then
+	#nbliens_mots_clefs
+	if [ $nbliens_mots_clefs -eq 0 ]
+	then
+		echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
+	        if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
+		nbliens_mots_clefs=4
+	elif [ $nbliens_mots_clefs -gt 10 ]
+	then
 	        echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-        if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
-        nbliens_mots_clefs=10
-fi
+	        if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens choisi dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
+        	nbliens_mots_clefs=10
+	fi
 
 #choix_mail_ou_fichier
 if [ "$choix_mail_ou_fichier" != "mail" ] && [ "$choix_mail_ou_fichier" != "fichier"]
@@ -340,12 +365,73 @@ Check_dependancy()
 
 }
 
+#Vérification de l'existance des fichiers de BDD 
+Check_keywords_files()
+{
+	cpt_user=0
+	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]
+	do
+		 BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
+                 BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
+
+		if [ ! -f "$BDD_veille_mail_by_user" ]
+		then
+                	touch $BDD_veille_mail_by_user >> alert_qwant.log 2>&1
+		elif [ ! -f "$BDD_veille_data_by_user" ]
+		then
+			touch $BDD_veille_data_by_user >> alert_qwant.log 2>&1
+        	fi
+		
+		(($cpt_user++))
+	done
+}
+
 #Récupération des liens
 Search_links()
 {
 	if [ "$enable_multi" = "Activé" ]
 	then
-		echo "singe"	
+		cpt_user=0
+		while [ $cpt_user -lt $nbuser ]
+		do
+			#Boucle pour rechercher les liens pour chaque mot clef
+	                cat $filename_keywords_list_tmp | while read line #Lecture ligne par ligne
+        	        do
+                	        mots_clefs=$line
+				filename_keywords_result_by_user="${multi_pseudo[$cpt_user]}""_""$mots_clefs"".data"
+				filename_keywords_result_by_user_tmp="${multi_pseudo[$cpt_user]}""_""$mots_clefs"".tmp"				
+				BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
+				BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
+ 
+                        	#Inscription de l'entête
+                        	if [ ! -f "$filename_keywords_result_by_user" ]
+                        	then
+                                	echo "<br><br><b>$mots_clefs<b><br>" | sed s/'+'/' '/g > $filename_keywords_result_by_user
+                        	fi
+
+				#Lien du moteur de recherche
+                        	moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=$langue" 
+
+				#Récupération des liens sur le moteur de recherche
+                        	curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> $filename_keywords_result_by_user_tmp
+
+                        	#Vérification des doublons
+              			cat $filename_keywords_result_by_user_tmp | sort > tmp
+                        	cat $BDD_veille_mail_by_user | sort >> tmp
+                    	    	cat $BDD_veille_data_by_user | sort >> tmp
+                        	cat tmp | sort | uniq -d > tmp.tmp
+               	         	rm tmp >>alert_qwant.log 2>&1
+                	        cat $filename_keywords_result_by_user_tmp >> tmp.tmp
+                        	cat tmp.tmp | sort | uniq -u > $filename_keywords_result_by_user_tmp
+                    		rm tmp.tmp >>alert_qwant.log 2>&1
+                       		cat $filename_keywords_result_by_user_tmp | sed '/^$/d' >> $filename_keywords_result_by_user
+                  	        cat $filename_keywords_result_by_user_tmp | sed '/^$/d' >> $BDD_veille_data_by_user
+                        	rm $filename_keywords_result_by_user_tmp >>alert_qwant.log 2>&1
+
+		               	done
+			((cpt_user++))
+		done
+			
 	else
 		#Boucle pour rechercher les liens pour chaque mot clef
 		cat Mots_clefs.tmp | while read line #Lecture ligne par ligne
@@ -380,90 +466,207 @@ Search_links()
 #Boucle pour le comptage des lignes de la base de donnée de liens
 Check_howmany_links()
 {
-	cat BDD_veille.data | while read line
-	do
-       		((nbline++))
-		echo "$nbline" > nbline.tmp
-	done
-
-	#Test de la présence du fichier nbline.tmp
-	if [ -f "nbline.tmp" ] 
+	if [ "$enable_multi" = "Activé" ]
 	then
-		nbline=$(cat nbline.tmp)
+		nbuser=0
+		while [ $cpt_user -lt $nbuser ]
+		do
+			BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
+			filename_nbline_by_user="${multi_pseudo[$cpt_user]}""_""nbline.tmp"
+
+			nbline=0
+                	cat $BDD_veille_data_by_user | while read line
+                	do
+                        	((nbline++))
+                        	echo "$nbline" > $filename_nbline_by_user
+                	done
+
+                	#Test de la présence du fichier user_nbline.tmp
+	                if [ -f "$filename_nbline_by_user" ] 
+        	        then
+                        	nbline[$cpt_user]=$(cat $filename_nbline_by_user)
+                	fi
+                ((cpt_user++))
+                done
+
+
+	else
+		nbline=0
+		cat BDD_veille.data | while read line
+		do
+       			((nbline++))
+			echo "$nbline" > nbline.tmp
+		done
+
+		#Test de la présence du fichier nbline.tmp
+		if [ -f "nbline.tmp" ] 
+		then
+			nbline=$(cat nbline.tmp)
+		fi
 	fi
 }
 
 #Génération du document final
 Creat_finaldoc()
 {
-#Test les conditions pour créer le document final, nombre maximum de liens, option mail ou option fichier
-if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
-then
-	#Mise en forme du MEF
-	echo '<!doctype html>' >> BDD_veille.mef
-	echo '<html lang="fr">' >> BDD_veille.mef
-	echo '<head>' >> BDD_veille.mef
-	echo '<meta charset="utf-8">' >> BDD_veille.mef
-	echo '<title>[Alert Qwant] Newsletter</title>' >> BDD_veille.mef
-	echo '<link rel="stylesheet" href="style.css">' >> BDD_veille.mef
-	echo '</head>' >> BDD_veille.mef
-	echo '<body>' >> BDD_veille.mef
-	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> BDD_veille.mef
-	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> BDD_veille.mef
-	
-	cat BDD_veille.data | sort >> BDD_veille.mail
-	poids_BDD_mail=$(ls -lh BDD_veille.mail | cut -d ' ' -f5)
-	cat Mots_clefs.tmp | while read line # Boucle de concaténation des résultats dans le fichier mis en forme 
-	do
-		mot_clef=$(echo $line | sed s/'+'/' '/g)
-		vide=$(cat $line.data)
-		elem_comparaison="<br><br><b>""$mot_clef""<b><br>"
-		if [ "$vide" != "$elem_comparaison" ]
-		then
-			cat $line.data >> BDD_veille.mef
-			echo "" >> BDD_veille.mef
-		fi
-	done
-
-	cat BDD_veille.mef | while read line # Lecture des liens ligne par ligne pour ajouter le paramètre en URL
-	do
-		if [ "${line:0:2}" = "<a" ]
-		then
-			link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-			lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
-			echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
-		else
-			echo $line >> BDD_veille.mef.tmp
-		fi
-	done
-        cat BDD_veille.mef.tmp | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
-        cat BDD_veilleMEF.tmp | sed s/'\/><\/a>'/'\/><\/a><br>'/g > BDD_veille.mef
-
-
-	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> BDD_veille.mef
-	echo '</body>' >> BDD_veille.mef
-	echo '</html>' >> BDD_veille.mef
-
-	if [ "$choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
+	if [ "$enable_multi" = "Activé" ]
 	then
-		mail -s "$(echo -e "Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < BDD_veille.mef
-		echo "Un mail avec $nbline liens à été envoyé" >> alert_qwant.log
-		if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
-        elif [ "$choix_mail_ou_fichier" = "fichier" ] || [ "$fichier" = "Activé" ]
-	then
-		cat BDD_veille.mef > $chemin_fichier/Newsletter.html
-		echo "La newsletter avec $nbline liens est consultable ici $chemin_fichier" >> alert_qwant.log
-                if [ "$verbose" = "Activé" ]; then echo "La newsletter avec $nbline liens est consultable ici $chemin_fichier"; fi
+		nbuser=0
+                while [ $cpt_user -lt $nbuser ]
+                do
+			BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
+                        BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
+			BDD_veille_MEF_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef"
+			BDD_veille_MEFtmp_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef.tmp"
+			
+			#Mise en forme du MEF
+	                echo '<!doctype html>' >> $BDD_veille_MEF_by_user
+        	        echo '<html lang="fr">' >> $BDD_veille_MEF_by_user
+                	echo '<head>' >> $BDD_veille_MEF_by_user
+            	    	echo '<meta charset="utf-8">' >> $BDD_veille_MEF_by_user
+       	     		echo '<title>[Alert Qwant] Newsletter</title>' >> $BDD_veille_MEF_by_user
+        	    	echo '<link rel="stylesheet" href="style.css">' >> $BDD_veille_MEF_by_user
+            		echo '</head>' >> $BDD_veille_MEF_by_user
+            		echo '<body>' >> $BDD_veille_MEF_by_user
+           	 	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> $BDD_veille_MEF_by_user
+               	    	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> $BDD_veille_MEF_by_user
+
+			cat $BDD_veille_data_by_user | sort >> $BDD_veille_mail_by_user
+	                poids_BDD_mail=$(ls -lh $BDD_veille_mail_by_user | cut -d ' ' -f5)
+
+        	        # Boucle de concaténation des résultats dans le fichier mis en forme
+			cat $filename_keywords_list_tmp | while read line
+                	do
+                        	mot_clef=$(echo $line | sed s/'+'/' '/g)
+                        	vide=$(cat "${multi_pseudo[$cpt_user]}""_""$line"".data")
+                        	elem_comparaison="<br><br><b>""$mot_clef""<b><br>"
+                        	if [ "$vide" != "$elem_comparaison" ]
+                        	then
+                        	        cat "${multi_pseudo[$cpt_user]}""_""$line"".data" >> $BDD_veille_MEF_by_user
+                               		echo "" >> $BDD_veille_MEF_by_user
+                        	fi
+                	done
+			
+			if [ "$multi_enable_save[$cpt_user]" = "Oui" ]
+                	then
+ 	                       # Lecture des liens ligne par ligne pour ajouter le paramètre en URL
+        	                cat $BDD_veille_MEF_by_user | while read line
+                	        do
+                        	        if [ "${line:0:2}" = "<a" ]
+                                	then
+                                        	link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
+                                        	lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+                                      		echo $line | sed "s/<\/a>/$lien_sauv/g" >> $BDD_veille_MEFtmp_by_user
+                                	else
+                                        	echo $line >> $BDD_veille_MEFtmp_by_user
+                                	fi
+                        	done
+                	fi
+
+                	cat $BDD_veille_MEFtmp_by_user | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
+                	cat BDD_veilleMEF.tmp | sed s/'\/><\/a>'/'\/><\/a><br>'/g > $BDD_veille_MEFtmp_by_user
+
+                	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> $BDD_veille_MEF_by_user
+                	echo '</body>' >> $BDD_veille_MEF_by_user
+                	echo '</html>' >> $BDD_veille_MEF_by_user			
+
+			if [ "$choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
+                	then
+                        	mail -s "$(echo -e "Newsletter de $nbline[$cpt_user] liens\nContent-Type: text/html")" $multi_adresse_mail[$cpt_user] < $BDD_veille_MEF_by_user
+                        	echo "Un mail avec $nbline[$cpt_user] liens à été envoyé à $multi_adresse_mail[$cpt_user]" >> alert_qwant.log
+                        	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline[$cpt_user] liens à été envoyé à $multi_adresse_mail[$cpt_user]"; fi
+                	elif [ "$multi_choix_mail_ou_fichier[$cpt_user]" = "fichier" ] || [ "$fichier" = "Activé" ]
+                	then
+                        	cat $BDD_veille_MEF_by_user > $multi_chemin_fichier[$cpt_user]/Newsletter-$multi_pseudo[$cpt_user].html
+                        	echo "La newsletter avec $nbline[$cpt_user] liens est consultable ici $multi_chemin_fichier[$cpt_user]" >> alert_qwant.log
+                        	if [ "$verbose" = "Activé" ]; then echo "La newsletter avec $nbline[$cpt_user] liens est consultable ici $multi_chemin_fichier[$cpt_user]"; fi
+                	else
+                        	echo "Choix mail ou fichier argument invalide" >> alert_qwant.log
+                        	if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
+                	fi
+
+                	rm *.mef *.data *.tmp >>alert_qwant.log 2>&1
+                	echo "Le fichier BDD_veille.mail de $multi_pseudo[$cpt_user] pèse $poids_BDD_mail" >> alert_qwant.log
+               		echo "Fin de l'exécution du programme" >> alert_qwant.log
+                	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail de $multi_pseudo[$cpt_user] pèse $poids_BDD_mail"; fi
+
+			((cpt_user++))
+		done
+	Stop_script
+
 	else
-		echo "Choix mail ou fichier argument invalide" >> alert_qwant.log
-		if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
+		#Mise en forme du MEF
+		echo '<!doctype html>' >> BDD_veille.mef
+		echo '<html lang="fr">' >> BDD_veille.mef
+		echo '<head>' >> BDD_veille.mef
+		echo '<meta charset="utf-8">' >> BDD_veille.mef
+		echo '<title>[Alert Qwant] Newsletter</title>' >> BDD_veille.mef
+		echo '<link rel="stylesheet" href="style.css">' >> BDD_veille.mef
+		echo '</head>' >> BDD_veille.mef
+		echo '<body>' >> BDD_veille.mef
+		echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> BDD_veille.mef
+		echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> BDD_veille.mef
+	
+		cat BDD_veille.data | sort >> BDD_veille.mail
+		poids_BDD_mail=$(ls -lh BDD_veille.mail | cut -d ' ' -f5)
+
+		# Boucle de concaténation des résultats dans le fichier mis en forme
+		cat Mots_clefs.tmp | while read line 
+		do
+			mot_clef=$(echo $line | sed s/'+'/' '/g)
+			vide=$(cat $line.data)
+			elem_comparaison="<br><br><b>""$mot_clef""<b><br>"
+			if [ "$vide" != "$elem_comparaison" ]
+			then
+				cat $line.data >> BDD_veille.mef
+				echo "" >> BDD_veille.mef
+			fi
+		done
+
+		if [ "$enable_save" = "Oui" ]
+		then
+			# Lecture des liens ligne par ligne pour ajouter le paramètre en URL
+			cat BDD_veille.mef | while read line
+			do
+				if [ "${line:0:2}" = "<a" ]
+				then
+					link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
+					lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$user'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+					echo $line | sed "s/<\/a>/$lien_sauv/g" >> BDD_veille.mef.tmp
+				else
+					echo $line >> BDD_veille.mef.tmp
+				fi
+			done
+		fi
+
+        	cat BDD_veille.mef.tmp | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
+        	cat BDD_veilleMEF.tmp | sed s/'\/><\/a>'/'\/><\/a><br>'/g > BDD_veille.mef
+
+		echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> BDD_veille.mef
+		echo '</body>' >> BDD_veille.mef
+		echo '</html>' >> BDD_veille.mef
+	
+		if [ "$multi_choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
+		then
+			mail -s "$(echo -e "Newsletter de $nbline liens\nContent-Type: text/html")" $adresse_mail < BDD_veille.mef
+			echo "Un mail avec $nbline liens à été envoyé" >> alert_qwant.log
+			if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline liens à été envoyé"; fi
+	        elif [ "$choix_mail_ou_fichier" = "fichier" ] || [ "$fichier" = "Activé" ]
+		then
+			cat BDD_veille.mef > $chemin_fichier/Newsletter.html
+			echo "La newsletter avec $nbline liens est consultable ici $chemin_fichier" >> alert_qwant.log
+               		if [ "$verbose" = "Activé" ]; then echo "La newsletter avec $nbline liens est consultable ici $chemin_fichier"; fi
+		else
+			echo "Choix mail ou fichier argument invalide" >> alert_qwant.log
+			if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
+		fi
+
+		rm *.mef *.data *.tmp >>alert_qwant.log 2>&1
+	        echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail" >> alert_qwant.log
+		echo "Fin de l'exécution du programme" >> alert_qwant.log
+		if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail"; fi
+        	Stop_script
 	fi
-	rm *.mef *.data *.tmp >>alert_qwant.log 2>&1
-        echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail" >> alert_qwant.log
-	echo "Fin de l'exécution du programme" >> alert_qwant.log
-	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail"; fi
-        Stop_script
-fi
 }
 
 
@@ -488,7 +691,7 @@ Check_PHP_savepage()
 		echo "\$link = htmlspecialchars(\$_GET['link']);" >> $adress_PHP_saver_local
 		echo "\$comma = ',';" >> $adress_PHP_saver_local
 		echo '$eol = "\n";' >> $adress_PHP_saver_local
-		echo "\$BDD_noSQL = fopen('/home/alertqwant/BDD_links.nsq', 'a');" >> $adress_PHP_saver_local
+		echo "\$BDD_noSQL = fopen('/home/alertqwant/BDD_links.csv', 'a');" >> $adress_PHP_saver_local
 		echo 'fprintf( $BDD_noSQL, $user );' >> $adress_PHP_saver_local
 		echo 'fprintf( $BDD_noSQL, $comma );' >> $adress_PHP_saver_local
 		echo 'fprintf( $BDD_noSQL, $link );' >> $adress_PHP_saver_local
@@ -497,7 +700,8 @@ Check_PHP_savepage()
 		echo 'echo "Le lien a bien ete sauvegarde, vous pouvez fermer la page"; ' >> $adress_PHP_saver_local
 		echo '}' >> $adress_PHP_saver_local
 		echo '?>' >> $adress_PHP_saver_local
-		touch BDD_links.nsq
+		touch BDD_links.csv
+		chmod 666 BDD_links.csv
 
 		echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web" >> alert_qwant.log
                 if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web";fi
@@ -524,7 +728,8 @@ langue_dispo=( 'en' 'fr' 'de' 'es' 'it' 'pt' 'nl' 'ru' 'pl' 'zh' 'XYZcaseenplusX
 user="main"
 adress_PHP_saver_local="/home/alertqwant/save_links.php"
 
-Log_write_timestrart
+Write_timestart_inlog
+
 while [ $# -ge $cpt ] && [ $# -ge 1 ]
 do
 	Read_option "$1"
@@ -537,10 +742,10 @@ Check_WhereamI
 Check_sysfiles
 Check_BDD_veille
 
-Del_space_keywords
-
 Read_conffile
 Check_read_conffile
+
+Check_keywords_lists
 
 Check_PHP_savepage
 
@@ -549,7 +754,10 @@ Crontab_addrule
 Search_links
 Check_howmany_links
 
-Creat_finaldoc
+if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
+then
+	Creat_finaldoc
+fi
 
 
 Stop_script
