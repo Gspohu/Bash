@@ -116,7 +116,7 @@ Check_sysfiles()
 		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
 		echo "10- Adresse web de la page PHP de sauvegarde des liens : monsite.eu/save_links.php" >> alert_qwant.conf
 		echo "" >> alert_qwant.conf 
-		echo "#Listez ci-dessous les utilisateurs sous cette forme sans le # :"  >> alert_qwant.conf
+		echo "#Listez ci-dessous les utilisateurs sous cette forme sans le #, pensez à supprimer les exemples en # :"  >> alert_qwant.conf
 		echo "#<0> Pseudo0 : 2 : 3 : 4 : 5 : 6 : 7 : 8 <" >> alert_qwant.conf
 		echo "#<1> Aymeric : fr : 4 : 50 : mail : adresse@mail.eu : /home/alertqwant/ : Oui <" >> alert_qwant.conf
 	        echo "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
@@ -297,6 +297,8 @@ Check_read_conffile()
 				((i++))
 			fi
 		done
+		
+		((cpt_user++))
 	done
 
 	if [ "$verbose" = "Activé" ]; then echo "Vérification des options de configurations.......Fait"; fi
@@ -369,7 +371,7 @@ Search_links()
 		while [ $cpt_user -lt $nbuser ]
 		do
 			#Boucle pour rechercher les liens pour chaque mot clef
-	                cat $filename_keywords_list_tmp | while read line #Lecture ligne par ligne
+	                cat ${filename_keywords_list_tmp[$cpt_user]} | while read line #Lecture ligne par ligne
         	        do
                 	        mots_clefs=$line
 				filename_keywords_result_by_user="${multi_pseudo[$cpt_user]}""_""$mots_clefs"".data"
@@ -387,7 +389,7 @@ Search_links()
                         	moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=$langue" 
 
 				#Récupération des liens sur le moteur de recherche
-                        	curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n $nbliens_mots_clefs | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> $filename_keywords_result_by_user_tmp
+                        	curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n ${multi_nbliens_mots_clefs[$cpt_user]} | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> $filename_keywords_result_by_user_tmp
 
                         	#Vérification des doublons
               			cat $filename_keywords_result_by_user_tmp | sort > tmp
