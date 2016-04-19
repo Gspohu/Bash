@@ -164,7 +164,7 @@ if [ "$verbose" = "Activé" ]; then echo "Vérification des fichiers systèmes..
 Check_keywords_lists()
 {
 	cpt_user=0
-	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]	
+	while [ $cpt_user -lt $nbuser ]	
 	do
 		filename_keywords_list="${multi_pseudo[$cpt_user]}""_""mots_clefs.list"
 		filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""_""mots_clefs.tmp"
