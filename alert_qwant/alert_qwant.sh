@@ -386,7 +386,7 @@ Search_links()
                         	fi
 
 				#Lien du moteur de recherche
-                        	moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=$langue" 
+                        	moteur="https://lite.qwant.com/?q=$mots_clefs&t=news&l=${multi_langue[$cpt_user]}" 
 
 				#Récupération des liens sur le moteur de recherche
                         	curl -s $moteur | grep -A 3 $indice | grep -o '<a href'.*'</a>'$ | head -n ${multi_nbliens_mots_clefs[$cpt_user]} | sed s/'\<\/a\>'/'\<\/a\>\n'/g >> $filename_keywords_result_by_user_tmp
