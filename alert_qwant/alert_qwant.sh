@@ -385,9 +385,13 @@ Check_BBD_files()
 		if [ ! -f "$BDD_veille_mail_by_user" ]
 		then
                 	touch $BDD_veille_mail_by_user >> alert_qwant.log 2>&1
+			if [ "$verbose" = "Activé" ]; then echo "Création du fichier $BDD_veille_mail_by_user"; fi
+			echo "Création du fichier $BDD_veille_mail_by_user"  >> alert_qwant.log
 		elif [ ! -f "$BDD_veille_data_by_user" ]
 		then
 			touch $BDD_veille_data_by_user >> alert_qwant.log 2>&1
+			if [ "$verbose" = "Activé" ]; then echo "Création du fichier $BDD_veille_data_by_user"; fi
+			echo "Création du fichier $BDD_veille_data_by_user" >> alert_qwant.log
         	fi
 		
 		((cpt_user++))
