@@ -372,7 +372,7 @@ Search_links()
 		do
 			filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""_""mots_clefs.tmp"
 			#Boucle pour rechercher les liens pour chaque mot clef
-	                cat filename_keywords_list_tmp | while read line #Lecture ligne par ligne
+	                cat $filename_keywords_list_tmp | while read line #Lecture ligne par ligne
         	        do
                 	        mots_clefs=$line
 				filename_keywords_result_by_user="${multi_pseudo[$cpt_user]}""_""$mots_clefs"".data"
