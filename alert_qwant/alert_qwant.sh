@@ -372,7 +372,7 @@ Search_links()
 		do
 			filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""_""mots_clefs.tmp"
 			#Boucle pour rechercher les liens pour chaque mot clef
-	                cat ${filename_keywords_list_tmp[$cpt_user]} | while read line #Lecture ligne par ligne
+	                cat filename_keywords_list_tmp | while read line #Lecture ligne par ligne
         	        do
                 	        mots_clefs=$line
 				filename_keywords_result_by_user="${multi_pseudo[$cpt_user]}""_""$mots_clefs"".data"
@@ -460,6 +460,7 @@ Creat_finaldoc()
             		echo '<body>' >> $BDD_veille_MEF_by_user
            	 	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> $BDD_veille_MEF_by_user
                	    	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> $BDD_veille_MEF_by_user
+			echo "<br><p align="left"><font color="black" >Bonjour ${multi_pseudo[$cpt_user]},</font></p><br/>" >> $BDD_veille_MEF_by_user
 
 			cat $BDD_veille_data_by_user | sort >> $BDD_veille_mail_by_user
 	                poids_BDD_mail=$(ls -lh $BDD_veille_mail_by_user | cut -d ' ' -f5)
@@ -515,14 +516,14 @@ Creat_finaldoc()
                         	if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
                 	fi
 
-                	rm $BDD_veille_MEFtmp_by_user $BDD_veille_MEF_by_user ${multi_pseudo[$cpt_user]}.*.data  >>alert_qwant.log 2>&1
+                	rm $BDD_veille_MEFtmp_by_user $BDD_veille_MEF_by_user >>alert_qwant.log 2>&1
                 	echo "Le fichier BDD_veille.mail de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail" >> alert_qwant.log
                		echo "Fin de l'exécution du programme" >> alert_qwant.log
                 	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
 
 			((cpt_user++))
 		done
-
+	rm *.data
 	Stop_script
 }
 
