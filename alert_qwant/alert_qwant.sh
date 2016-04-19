@@ -114,7 +114,7 @@ Check_sysfiles()
 		echo "7- Chemin absolu du fichier : /home/alertqwant/" >> alert_qwant.conf
 		echo "8- Activation du boutton de sauvegarde (Oui/Non) : Oui" >> alert_qwant.conf
 		echo "9- Adresse absolue de la page PHP de sauvegarde des liens : /var/www/" >> alert_qwant.conf
-		echo "10- Adresse web de la page PHP de sauvegarde des liens : www.monsite.eu/save_link" >> alert_qwant.conf
+		echo "10- Adresse web de la page PHP de sauvegarde des liens : www.monsite.eu/save_link.php" >> alert_qwant.conf
 		echo "11- Mode multi-utilisateurs (Activé/Désactivé) : Désactivé" >> alert_qwant.conf
 		echo "" >> alert_qwant.conf 
 		echo "#En cas d'activation du mode multi-utilisateurs listez ci-dessous les utilisateurs sous cette forme :"  >> alert_qwant.conf
@@ -370,7 +370,7 @@ Check_dependancy()
 		echo "Certaines dépendance ne sont pas satisfaitent" >> alert_qwant.log
 		Stop_script
 	fi
-if [ "$verbose" = "Activé" ]; then echo "Vérification des dépendance.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo "Vérification des dépendances.......Fait"; fi
 }
 
 #Vérification de l'existance des fichiers de BDD 
@@ -478,16 +478,15 @@ Check_howmany_links()
 {
 	if [ "$enable_multi" = "Activé" ]
 	then
-		nbuser=0
+		cpt_user=0
 		while [ $cpt_user -lt $nbuser ]
 		do
 			BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
 			filename_nbline_by_user="${multi_pseudo[$cpt_user]}""_""nbline.tmp"
 
-			nbline=0
                 	cat $BDD_veille_data_by_user | while read line
                 	do
-                        	((nbline++))
+                        	((nbline[$cpt_user]++))
                         	echo "$nbline" > $filename_nbline_by_user
                 	done
 
@@ -520,6 +519,7 @@ if [ "$verbose" = "Activé" ]; then echo "Compte du nombre de liens.......Fait";
 #Génération du document final
 Creat_finaldoc()
 {
+	if [ "$verbose" = "Activé" ]; then echo "Création du document final.......en cours"; fi
 	if [ "$enable_multi" = "Activé" ]
 	then
 		cpt_user=0
@@ -558,7 +558,7 @@ Creat_finaldoc()
                         	fi
                 	done
 			
-			if [ "$multi_enable_save[$cpt_user]" = "Oui" ]
+			if [ "${multi_enable_save[$cpt_user]}" = "Oui" ]
                 	then
  	                       # Lecture des liens ligne par ligne pour ajouter le paramètre en URL
         	                cat $BDD_veille_MEF_by_user | while read line
@@ -566,7 +566,7 @@ Creat_finaldoc()
                         	        if [ "${line:0:2}" = "<a" ]
                                 	then
                                         	link=$(echo $line | cut -d '"' -f2 | sed 's/\//\\\//g')
-                                        	lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='$multi_pseudo[$cpt_user]'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
+                                        	lien_sauv='\&\#8239\;\&\#8239\;\&\#8239\;\&\#8239\;<\/a><a href="https:\/\/cairn-devices.eu\/save_links.php?user='${multi_pseudo[$cpt_user]}'\&link='$link'" ><img src="https:\/\/raw.githubusercontent.com\/Gspohu\/Bash\/master\/alert_qwant\/ico_save.png" width="17"  alt="icon_save" \/><\/a>'
                                       		echo $line | sed "s/<\/a>/$lien_sauv/g" >> $BDD_veille_MEFtmp_by_user
                                 	else
                                         	echo $line >> $BDD_veille_MEFtmp_by_user
@@ -581,25 +581,25 @@ Creat_finaldoc()
                 	echo '</body>' >> $BDD_veille_MEF_by_user
                 	echo '</html>' >> $BDD_veille_MEF_by_user			
 
-			if [ "$choix_mail_ou_fichier" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
+			if [ "${multi_choix_mail_ou_fichier[$cpt_user]}" = "mail" ] || [ "$mail" = "Activé" ] && [ "$fichier" != "Activé" ]
                 	then
-                        	mail -s "$(echo -e "Newsletter de $nbline[$cpt_user] liens\nContent-Type: text/html")" $multi_adresse_mail[$cpt_user] < $BDD_veille_MEF_by_user
-                        	echo "Un mail avec $nbline[$cpt_user] liens à été envoyé à $multi_adresse_mail[$cpt_user]" >> alert_qwant.log
-                        	if [ "$verbose" = "Activé" ]; then echo "Un mail avec $nbline[$cpt_user] liens à été envoyé à $multi_adresse_mail[$cpt_user]"; fi
-                	elif [ "$multi_choix_mail_ou_fichier[$cpt_user]" = "fichier" ] || [ "$fichier" = "Activé" ]
+                        	mail -s "$(echo -e "Newsletter de ${nbline[$cpt_user]} liens\nContent-Type: text/html")" ${multi_adresse_mail[$cpt_user]} < $BDD_veille_MEF_by_user
+                        	echo "Un mail avec ${nbline[$cpt_user]} liens à été envoyé à ${multi_adresse_mail[$cpt_user]}" >> alert_qwant.log
+                        	if [ "$verbose" = "Activé" ]; then echo "Un mail avec ${nbline[$cpt_user]} liens à été envoyé à ${multi_adresse_mail[$cpt_user]}"; fi
+                	elif [ "${multi_choix_mail_ou_fichier[$cpt_user]}" = "fichier" ] || [ "$fichier" = "Activé" ]
                 	then
-                        	cat $BDD_veille_MEF_by_user > $multi_chemin_fichier[$cpt_user]/Newsletter-$multi_pseudo[$cpt_user].html
-                        	echo "La newsletter avec $nbline[$cpt_user] liens est consultable ici $multi_chemin_fichier[$cpt_user]" >> alert_qwant.log
-                        	if [ "$verbose" = "Activé" ]; then echo "La newsletter avec $nbline[$cpt_user] liens est consultable ici $multi_chemin_fichier[$cpt_user]"; fi
+                        	cat $BDD_veille_MEF_by_user > ${multi_chemin_fichier[$cpt_user]}/Newsletter-${multi_pseudo[$cpt_user]}.html
+                        	echo "La newsletter avec ${nbline[$cpt_user]} liens est consultable ici ${multi_chemin_fichier[$cpt_user]}" >> alert_qwant.log
+                        	if [ "$verbose" = "Activé" ]; then echo "La newsletter avec ${nbline[$cpt_user]} liens est consultable ici ${multi_chemin_fichier[$cpt_user]}"; fi
                 	else
                         	echo "Choix mail ou fichier argument invalide" >> alert_qwant.log
                         	if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
                 	fi
 
                 	rm *.mef *.data *.tmp >>alert_qwant.log 2>&1
-                	echo "Le fichier BDD_veille.mail de $multi_pseudo[$cpt_user] pèse $poids_BDD_mail" >> alert_qwant.log
+                	echo "Le fichier BDD_veille.mail de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail" >> alert_qwant.log
                		echo "Fin de l'exécution du programme" >> alert_qwant.log
-                	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail de $multi_pseudo[$cpt_user] pèse $poids_BDD_mail"; fi
+                	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
 
 			((cpt_user++))
 		done
@@ -678,7 +678,6 @@ Creat_finaldoc()
 		if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail pèse $poids_BDD_mail"; fi
         	Stop_script
 	fi
-if [ "$verbose" = "Activé" ]; then echo "Création du document final.......Fait"; fi
 }
 
 
@@ -772,10 +771,11 @@ Check_howmany_links
 cpt_user=0
 while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ] 
 do
-	if [ $nbline[$cpt_user] -ge $multi_nbliens_par_mail[$cpt_user] ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
+	if [ ${nbline[$cpt_user]} -ge ${multi_nbliens_par_mail[$cpt_user]} ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
 	then
 		Creat_finaldoc
 	fi
+	((cpt_user++))
 done
 
 if [ $nbline -ge $nbliens_par_mail ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ] && [ "$enable_multi" = "Désactivé" ]
