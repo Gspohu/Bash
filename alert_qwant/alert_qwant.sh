@@ -370,6 +370,7 @@ Search_links()
 		cpt_user=0
 		while [ $cpt_user -lt $nbuser ]
 		do
+			filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""_""mots_clefs.tmp"
 			#Boucle pour rechercher les liens pour chaque mot clef
 	                cat ${filename_keywords_list_tmp[$cpt_user]} | while read line #Lecture ligne par ligne
         	        do
