@@ -341,7 +341,7 @@ if [ "$verbose" = "Activé" ]; then echo "Vérification des dépendances.......F
 Check_BBD_files()
 {
 	cpt_user=0
-	while [ $cpt_user -lt $nbuser ] && [ "$enable_multi" = "Activé" ]
+	while [ $cpt_user -lt $nbuser ]
 	do
 		BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
                 BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
@@ -403,7 +403,6 @@ Search_links()
                        		cat $filename_keywords_result_by_user_tmp | sed '/^$/d' >> $filename_keywords_result_by_user
                   	        cat $filename_keywords_result_by_user_tmp | sed '/^$/d' >> $BDD_veille_data_by_user
                         	rm $filename_keywords_result_by_user_tmp >>alert_qwant.log 2>&1
-
 		               	done
 			((cpt_user++))
 		done
