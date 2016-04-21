@@ -39,11 +39,10 @@ Read_option()
 			fi
         	elif [ $1 = "--dmail" ]
 		then
-			rm BDD_veille.mail >>alert_qwant.log 2>&1
+			rm *.mail >>alert_qwant.log 2>&1
 		
 			echo "La base de donné de liens envoyés par mail à été vidé" >> alert_qwant.log
 			if [ "$verbose" = "Activé" ]; then echo "La base de donné de liens envoyés par mail à été vidé"; fi
-			echo 'Historique des liens envoyé par mail' >> BDD_veille.mail
 		elif [ $1 = "--dlog" ] 
 		then
 			rm alert_qwant.log >>alert_qwant.log 2>&1
@@ -518,14 +517,12 @@ Creat_finaldoc()
                        	if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
                	fi
 
-               	rm $BDD_veille_MEFtmp_by_user $BDD_veille_MEF_by_user >>alert_qwant.log 2>&1
                	echo "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail" >> alert_qwant.log
-       		echo "Fin de l'exécution du programme" >> alert_qwant.log
-               	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
+               	if [ "$verbose" = "Activé" ]; then echo "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
 
 		((cpt_user++))
 	done
-	rm *.data
+	rm *.data *.tmp *.mef >>alert_qwant.log 2>&1
 	Stop_script
 }
 
