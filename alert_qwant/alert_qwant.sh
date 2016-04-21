@@ -442,8 +442,6 @@ Creat_finaldoc()
 {
 	if [ "$verbose" = "Activé" ]; then echo "Création du document final.......en cours"; fi
 	cpt_user=0
-        while [ $cpt_user -lt $nbuser ]
-        do
 		BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
                 BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
 		BDD_veille_MEF_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef"
@@ -480,6 +478,7 @@ Creat_finaldoc()
 			
 		if [ "${multi_enable_save[$cpt_user]}" = "Oui" ]
                	then
+			echo "" > $BDD_veille_MEFtmp_by_user
                        # Lecture des liens ligne par ligne pour ajouter le paramètre en URL
        	                cat $BDD_veille_MEF_by_user | while read line
                	        do
@@ -519,11 +518,6 @@ Creat_finaldoc()
 
                	echo "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail" >> alert_qwant.log
                	if [ "$verbose" = "Activé" ]; then echo "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
-
-		((cpt_user++))
-	done
-	rm *.data *.tmp *.mef >>alert_qwant.log 2>&1
-	Stop_script
 }
 
 Check_PHP_savepage()
@@ -609,8 +603,9 @@ do
 	if [ ${nbline[$cpt_user]} -ge ${multi_nbliens_par_mail[$cpt_user]} ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
 	then
 		Creat_finaldoc
+		rm ${multi_pseudo[$cpt_user]}.*.data>>alert_qwant.log 2>&1
 	fi
-
+	rm  *.tmp *.mef >>alert_qwant.log 2>&1
 	((cpt_user++))
 done
 
