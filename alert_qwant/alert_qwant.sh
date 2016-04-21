@@ -493,9 +493,10 @@ Creat_finaldoc()
                                        	echo $line >> $BDD_veille_MEFtmp_by_user
                                	fi
                        	done
+			cat $BDD_veille_MEFtmp_by_user > $BDD_veille_MEF_by_user
                	fi
 
-               	cat $BDD_veille_MEFtmp_by_user | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
+               	cat $BDD_veille_MEF_by_user | sed s/'\n'/'<br>'/g > BDD_veilleMEF.tmp
                	cat BDD_veilleMEF.tmp | sed s/'\/><\/a>'/'\/><\/a><br>'/g > $BDD_veille_MEF_by_user
 
                	echo '<br/><br/><br/><br/><center><font color="grey" size="1pt"> Powered by <img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/Qwant_lite_logo.jpg" width="80"  alt="Logo_qwant_lite" /><br/>Le logo de Qwant et le logo de Bash sont la propriété de leur auteurs respectif. En cas de réclamation ou de problème me contacter sur https://github.com/Gspohu</font></center>' >> $BDD_veille_MEF_by_user
@@ -518,7 +519,7 @@ Creat_finaldoc()
                	fi
 
                	rm $BDD_veille_MEFtmp_by_user $BDD_veille_MEF_by_user >>alert_qwant.log 2>&1
-               	echo "Le fichier BDD_veille.mail de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail" >> alert_qwant.log
+               	echo "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail" >> alert_qwant.log
        		echo "Fin de l'exécution du programme" >> alert_qwant.log
                	if [ "$verbose" = "Activé" ]; then echo "Le fichier BDD_veille.mail de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
 
