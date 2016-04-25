@@ -70,6 +70,7 @@ Read_option()
 		else
                 	if [ "$verbose" = "Activé" ]; then echo -e "\033[31mErreur : Option non reconnue\033[00m"; fi
 			echo 'Erreur : Option non reconnue' >> alert_qwant.log
+			Stop_script
         	fi
 if [ "$verbose" = "Activé" ]; then echo -e "Lecture des options.......\033[32mFait\033[00m"; fi
 }
