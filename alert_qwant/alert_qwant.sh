@@ -227,7 +227,7 @@ Check_read_conffile()
 	if [ $test_entier -ne 24 ]
 	then
 		echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-        	if [ "$verbose" = "Activé" ]; then echo -e "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger"; fi
+        	if [ "$verbose" = "Activé" ]; then echo -e "\033[31mLa frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger\033[00m"; fi
 	fi
 
 	cpt_user=0
@@ -237,12 +237,12 @@ Check_read_conffile()
 		if [ ${multi_nbliens_mots_clefs[$cpt_user]} -eq 0 ]
 		then
 			echo "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-	        	if [ "$verbose" = "Activé" ]; then echo -e "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
+	        	if [ "$verbose" = "Activé" ]; then echo -e "\033[31mLe nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger\033[00m"; fi
 			multi_nbliens_mots_clefs[$cpt_user]=4
 		elif [ ${multi_nbliens_mots_clefs[$cpt_user]} -gt 10 ]
 		then
 		        echo "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-	        	if [ "$verbose" = "Activé" ]; then echo -e "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
+	        	if [ "$verbose" = "Activé" ]; then echo -e "\033[31mLe nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger\033[00m"; fi
         		multi_nbliens_mots_clefs[$cpt_user]=10
 		fi
 
