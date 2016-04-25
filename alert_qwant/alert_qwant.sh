@@ -4,7 +4,7 @@
 Stop_script()
 {
         echo "Fin de l'exécution du script le $jour_heure " >> alert_qwant.log
-        if [ "$verbose" = "Activé" ]; then echo "Fin de l'exécution du script à $jour_heure "; fi
+        if [ "$verbose" = "Activé" ]; then echo -e "Fin de l'exécution du script à $jour_heure "; fi
         echo " " >> alert_qwant.log
         rm *.tmp >>alert_qwant.log 2>&1
         exit 0 #Fin du programme
@@ -30,11 +30,11 @@ Read_option()
 				chmod +x alert_qwant.sh
 
 				echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour " >> alert_qwant.log
-				if [ "$verbose" = "Activé" ]; then echo "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour "; fi
+				if [ "$verbose" = "Activé" ]; then echo -e "Une mise à jour est disponible, elle a été téléchargé, alert_qwant est à jour "; fi
 				Stop_script
 			else
 				echo "Aucune mise à jour disponible" >> alert_qwant.log
-				if [ "$verbose" = "Activé" ]; then echo "Aucune mise à jour disponible"; fi
+				if [ "$verbose" = "Activé" ]; then echo -e "Aucune mise à jour disponible"; fi
 				Stop_script
 			fi
         	elif [ $1 = "--dmail" ]
@@ -42,36 +42,36 @@ Read_option()
 			rm *.mail >>alert_qwant.log 2>&1
 		
 			echo "La base de donné de liens envoyés par mail à été vidé" >> alert_qwant.log
-			if [ "$verbose" = "Activé" ]; then echo "La base de donné de liens envoyés par mail à été vidé"; fi
+			if [ "$verbose" = "Activé" ]; then echo -e "La base de donné de liens envoyés par mail à été vidé"; fi
 		elif [ $1 = "--dlog" ] 
 		then
 			rm alert_qwant.log >>alert_qwant.log 2>&1
 		
 			echo "Fichier log de alert_qwant" >> alert_qwant.log
-			if [ "$verbose" = "Activé" ]; then echo "Les logs ont été vidés"; fi
+			if [ "$verbose" = "Activé" ]; then echo -e "Les logs ont été vidés"; fi
 		elif [ $1 = "-v" ]
 		then
 			verbose="Activé"
 
-			if [ "$verbose" = "Activé" ]; then echo "Option verbose activé"; fi
+			if [ "$verbose" = "Activé" ]; then echo -e "Option verbose activé"; fi
                         echo "Option verbose activé" >> alert_qwant.log
 		elif [ $1 = "--mail" ]
 		then
 			mail="Activé"
 
 			echo "Option envoi de mail sans taille limite activé" >> alert_qwant.log
-			if [ "$verbose" = "Activé" ]; then echo "Option envoi de mail sans taille limite activé"; fi
+			if [ "$verbose" = "Activé" ]; then echo -e "Option envoi de mail sans taille limite activé"; fi
 		elif [ $1 = "--fichier" ]
 		then
 			fichier="Activé"
 
 			echo "Option envoi vers un fichier sans taille limite activé" >> alert_qwant.log
-                        if [ "$verbose" = "Activé" ]; then echo "Option envoi vers un fichier sans taille limite activé"; fi
+                        if [ "$verbose" = "Activé" ]; then echo -e "Option envoi vers un fichier sans taille limite activé"; fi
 		else
-                	if [ "$verbose" = "Activé" ]; then echo "Erreur : Option non reconnue"; fi
+                	if [ "$verbose" = "Activé" ]; then echo -e "Erreur : Option non reconnue"; fi
 			echo 'Erreur : Option non reconnue' >> alert_qwant.log
         	fi
-if [ "$verbose" = "Activé" ]; then echo "Lecture des options.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Lecture des options.......\033[32mFait\033[00m"; fi
 }
 
 #Ecrire dans le log l'heure du lancement
@@ -92,7 +92,7 @@ Check_WhereamI()
         	echo "Erreur critique : Le script est mal placé. Il doit être placé à la racine du home de l\'utilisateur alertqwant" >> alert_qwant.log
 		Stop_script
 	fi
-if [ "$verbose" = "Activé" ]; then echo "Vérification de l'emplacement.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Vérification de l'emplacement.......\033[32mFait\033[00m"; fi
 }
 
 #Vérification de la présence des fichiers systèmes
@@ -119,7 +119,7 @@ Check_sysfiles()
 		echo "#<0> Pseudo0 : 2 : 3 : 4 : 5 : 6 : 7 : 8 <" >> alert_qwant.conf
 		echo "#<1> Aymeric : fr : 4 : 50 : mail : adresse@mail.eu : /home/alertqwant/ : Oui <" >> alert_qwant.conf
 	        echo "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
-		if [ "$verbose" = "Activé" ]; then echo "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer."; fi
+		if [ "$verbose" = "Activé" ]; then echo -e "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer."; fi
 	        Stop_script
 	fi
 
@@ -154,9 +154,9 @@ Check_sysfiles()
 		rm  /usr/share/man/man1/alert_qwant.1 >>alert_qwant.log 2>&1
 
 		echo 'Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant' >> alert_qwant.log
-		if [ "$verbose" = "Activé" ]; then echo "Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant"; fi
+		if [ "$verbose" = "Activé" ]; then echo -e "Création de la page de manuel. Vous pouvez y accéder avec la commande man alert_qwant"; fi
 	fi
-if [ "$verbose" = "Activé" ]; then echo "Vérification des fichiers systèmes.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Vérification des fichiers systèmes.......\033[32mFait\033[00m"; fi
 }
 
 #Vérification et création des listes de mots clefs pour chaque utilisateurs et suppression des espaces
@@ -172,7 +172,7 @@ Check_keywords_lists()
 			echo "Qwant" >> $filename_keywords_list
 
         	        echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list" >> alert_qwant.log
-	                if [ "$verbose" = "Activé" ]; then echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list"; fi
+	                if [ "$verbose" = "Activé" ]; then echo -e "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list"; fi
 			Stop="O"
 		else
 			cat $filename_keywords_list | sed s/' '/'+'/g > $filename_keywords_list_tmp
@@ -185,7 +185,7 @@ Check_keywords_lists()
 		Stop_script
 	fi
 
-if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance de la liste des mots clefs pour chaque utilisateur.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Vérification de l'existance de la liste des mots clefs pour chaque utilisateur.......\033[32mFait\033[00m"; fi
 }
 
 #Lecture du fichier de configuration
@@ -216,7 +216,7 @@ Read_conffile()
 
 	#Concaténation de l'adresse et du nom de la page PHP de sauvegarde des liens
 	adress_PHP_saver="$adress_PHP""save_links.php"
-if [ "$verbose" = "Activé" ]; then echo "Lecture du fichier de configuration.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Lecture du fichier de configuration.......\033[32mFait\033[00m"; fi
 }
 
 #Vérification des erreurs dans la récupération des variables du fichier de configuration
@@ -227,7 +227,7 @@ Check_read_conffile()
 	if [ $test_entier -ne 24 ]
 	then
 		echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-        	if [ "$verbose" = "Activé" ]; then echo "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger"; fi
+        	if [ "$verbose" = "Activé" ]; then echo -e "La frequence de lancement divisé par 24 ne donne pas un nombre entier, le résultat à été troncaturé, veuillez éditer le fichier de configuration afin de corriger"; fi
 	fi
 
 	cpt_user=0
@@ -237,12 +237,12 @@ Check_read_conffile()
 		if [ ${multi_nbliens_mots_clefs[$cpt_user]} -eq 0 ]
 		then
 			echo "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-	        	if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
+	        	if [ "$verbose" = "Activé" ]; then echo -e "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est égale à 0 il a été interprété comme 4, veuillez éditer le fichier de configuration afin de corriger"; fi
 			multi_nbliens_mots_clefs[$cpt_user]=4
 		elif [ ${multi_nbliens_mots_clefs[$cpt_user]} -gt 10 ]
 		then
 		        echo "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger" >> alert_qwant.log
-	        	if [ "$verbose" = "Activé" ]; then echo "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
+	        	if [ "$verbose" = "Activé" ]; then echo -e "Le nombre de liens par mot clef choisi par l'utilisateur ${multi_pseudo[$cpt_user]} dans le fichier de configuration est supérieur à 10 il a été interprété comme 10, veuillez éditer le fichier de configuration afin de corriger"; fi
         		multi_nbliens_mots_clefs[$cpt_user]=10
 		fi
 
@@ -257,7 +257,7 @@ Check_read_conffile()
 				$choix_mail_ou_fichier="mail"
 			else
 				echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier de l'utilisateur ${multi_pseudo[$cpt_user]}" >> alert_qwant.log
-        			if [ "$verbose" = "Activé" ]; then echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier de l'utilisateur ${multi_pseudo[$cpt_user]}"; fi
+        			if [ "$verbose" = "Activé" ]; then echo -e "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier de l'utilisateur ${multi_pseudo[$cpt_user]}"; fi
         			Stop_script
 			fi
 		fi
@@ -269,7 +269,7 @@ Check_read_conffile()
 		if [ "$arob" = "" ] || [ "$domaine" = "" ] && [ "${multi_choix_mail_ou_fichier[$cpt_user]}" = "mail" ]
 		then
 			echo "L'adresse mail entré est fausse, veuillez corriger" >> alert_qwant.log
-        		if [ "$verbose" = "Activé" ]; then echo "L'adresse mail entré est fausse, veuillez corriger"; fi
+        		if [ "$verbose" = "Activé" ]; then echo -e "L'adresse mail entré est fausse, veuillez corriger"; fi
                		Stop_script
 		fi
 
@@ -277,7 +277,7 @@ Check_read_conffile()
 		if [ ! -d "${multi_chemin_fichier[$cpt_user]}" ]
 		then
         		echo "Le dossier $chemin_fichier n'existe pas, il sera créé" >> alert_qwant.log
-        		if [ "$verbose" = "Activé" ]; then echo "Le dossier $chemin_fichier n'existe pas, il sera créé"; fi
+        		if [ "$verbose" = "Activé" ]; then echo -e "Le dossier $chemin_fichier n'existe pas, il sera créé"; fi
 		fi
 
 		#Langue
@@ -290,7 +290,7 @@ Check_read_conffile()
 			elif [ $i -eq 10 ]
 			then
         			echo "La langue entrée pour l'utilisateur ${multi_pseudo[$cpt_user]} n'est pas disponible, la langue est passé en Français" >> alert_qwant.log
-        			if [ "$verbose" = "Activé" ]; then echo "La langue entrée pour l'utilisateur ${multi_pseudo[$cpt_user]} n'est pas disponible, la langue est passé en Français"; fi
+        			if [ "$verbose" = "Activé" ]; then echo -e "La langue entrée pour l'utilisateur ${multi_pseudo[$cpt_user]} n'est pas disponible, la langue est passé en Français"; fi
 				multi_langue[$cpt_user]="fr"
 			else
 				((i++))
@@ -300,7 +300,7 @@ Check_read_conffile()
 		((cpt_user++))
 	done
 
-	if [ "$verbose" = "Activé" ]; then echo "Vérification des options de configurations.......Fait"; fi
+	if [ "$verbose" = "Activé" ]; then echo -e "Vérification des options de configurations.......\033[32mFait\033[00m"; fi
 }
 
 #Mise en place du lancement automatique avec cron
@@ -317,11 +317,11 @@ Crontab_addrule()
 		crontab /tmp/crontab_tmp.tmp
 		rm -f /tmp/crontab_tmp.tmp /tmp/crontab_tmp_tmp.tmp >>alert_qwant.log 2>&1
 		echo "Ajout d'une règle dans crontab" >> alert_qwant.log
-		if [ "$verbose" = "Activé" ]; then echo "Ajout d'une règle dans crontab"; fi
+		if [ "$verbose" = "Activé" ]; then echo -e "Ajout d'une règle dans crontab"; fi
 	else	
 		rm /tmp/crontab_tmp.tmp >>alert_qwant.log 2>&1
 	fi
-if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance d'un règle crontab.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Vérification de l'existance d'un règle crontab.......\033[32mFait\033[00m"; fi
 }
 
 #Vérification de l'installation des dépendance
@@ -333,7 +333,7 @@ Check_dependancy()
 		echo "Certaines dépendance ne sont pas satisfaitent" >> alert_qwant.log
 		Stop_script
 	fi
-if [ "$verbose" = "Activé" ]; then echo "Vérification des dépendances.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Vérification des dépendances.......\033[32mFait\033[00m"; fi
 }
 
 #Vérification de l'existance des fichiers de BDD 
@@ -348,19 +348,19 @@ Check_BBD_files()
 		if [ ! -f "$BDD_veille_mail_by_user" ]
 		then
                 	touch $BDD_veille_mail_by_user >> alert_qwant.log 2>&1
-			if [ "$verbose" = "Activé" ]; then echo "Création du fichier $BDD_veille_mail_by_user"; fi
+			if [ "$verbose" = "Activé" ]; then echo -e "Création du fichier $BDD_veille_mail_by_user"; fi
 			echo "Création du fichier $BDD_veille_mail_by_user"  >> alert_qwant.log
 		fi
 		if [ ! -f "$BDD_veille_data_by_user" ]
 		then
 			touch $BDD_veille_data_by_user >> alert_qwant.log 2>&1
-			if [ "$verbose" = "Activé" ]; then echo "Création du fichier $BDD_veille_data_by_user"; fi
+			if [ "$verbose" = "Activé" ]; then echo -e "Création du fichier $BDD_veille_data_by_user"; fi
 			echo "Création du fichier $BDD_veille_data_by_user" >> alert_qwant.log
 		fi
 		
 		((cpt_user++))
 	done
-if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance des BDD_veille pour chaque utilisateur.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Vérification de l'existance des BDD_veille pour chaque utilisateur.......\033[32mFait\033[00m"; fi
 }
 
 #Récupération des liens
@@ -407,7 +407,7 @@ Search_links()
 			((cpt_user++))
 		done
 			
-	if [ "$verbose" = "Activé" ]; then echo "Recherche des liens.......Fait"; fi
+	if [ "$verbose" = "Activé" ]; then echo -e "Recherche des liens.......\033[32mFait\033[00m"; fi
 }
 
 #Boucle pour le comptage des lignes de la base de donnée de liens
@@ -434,13 +434,13 @@ Check_howmany_links()
                 ((cpt_user++))
                 done
 
-	if [ "$verbose" = "Activé" ]; then echo "Compte du nombre de liens.......Fait"; fi
+	if [ "$verbose" = "Activé" ]; then echo -e "Compte du nombre de liens.......\033[32mFait\033[00m"; fi
 }
 
 #Génération du document final
 Creat_finaldoc()
 {
-	if [ "$verbose" = "Activé" ]; then echo "Création du document final.......en cours"; fi
+	if [ "$verbose" = "Activé" ]; then echo -e "Création du document final.......en cours"; fi
 	cpt_user=0
 		BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
                 BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
@@ -505,19 +505,19 @@ Creat_finaldoc()
                	then
                        	mail -s "$(echo -e "Newsletter de ${nbline[$cpt_user]} liens\nContent-Type: text/html")" ${multi_adresse_mail[$cpt_user]} < $BDD_veille_MEF_by_user
                        	echo "Un mail avec ${nbline[$cpt_user]} liens à été envoyé à ${multi_adresse_mail[$cpt_user]}" >> alert_qwant.log
-                       	if [ "$verbose" = "Activé" ]; then echo "Un mail avec ${nbline[$cpt_user]} liens à été envoyé à ${multi_adresse_mail[$cpt_user]}"; fi
+                       	if [ "$verbose" = "Activé" ]; then echo -e "Un mail avec ${nbline[$cpt_user]} liens à été envoyé à ${multi_adresse_mail[$cpt_user]}"; fi
                	elif [ "${multi_choix_mail_ou_fichier[$cpt_user]}" = "fichier" ] || [ "$fichier" = "Activé" ]
                	then
                        	cat $BDD_veille_MEF_by_user > ${multi_chemin_fichier[$cpt_user]}/Newsletter-${multi_pseudo[$cpt_user]}.html
                        	echo "La newsletter avec ${nbline[$cpt_user]} liens est consultable ici ${multi_chemin_fichier[$cpt_user]}" >> alert_qwant.log
-                       	if [ "$verbose" = "Activé" ]; then echo "La newsletter avec ${nbline[$cpt_user]} liens est consultable ici ${multi_chemin_fichier[$cpt_user]}"; fi
+                       	if [ "$verbose" = "Activé" ]; then echo -e "La newsletter avec ${nbline[$cpt_user]} liens est consultable ici ${multi_chemin_fichier[$cpt_user]}"; fi
                	else
                        	echo "Choix mail ou fichier argument invalide" >> alert_qwant.log
-                       	if [ "$verbose" = "Activé" ]; then echo "Choix mail ou fichier argument invalide"; fi
+                       	if [ "$verbose" = "Activé" ]; then echo -e "Choix mail ou fichier argument invalide"; fi
                	fi
 
                	echo "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail" >> alert_qwant.log
-               	if [ "$verbose" = "Activé" ]; then echo "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
+               	if [ "$verbose" = "Activé" ]; then echo -e "Le fichier $BDD_veille_mail_by_user de ${multi_pseudo[$cpt_user]} pèse $poids_BDD_mail"; fi
 }
 
 Check_PHP_savepage()
@@ -525,7 +525,7 @@ Check_PHP_savepage()
 	if [ ! -f "$adress_PHP_saver" ]
         then
 		echo "La page PHP de sauvegarde des liens n'existe pas" >> alert_qwant.log
-	        if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens n'existe pas";fi
+	        if [ "$verbose" = "Activé" ]; then echo -e "La page PHP de sauvegarde des liens n'existe pas";fi
 		
 		echo '<?php' >> $adress_PHP_saver_local
 		echo "if (isset(\$_GET['user']) AND isset(\$_GET['link']))" >> $adress_PHP_saver_local
@@ -547,11 +547,11 @@ Check_PHP_savepage()
 		chmod 666 BDD_links.csv
 
 		echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web" >> alert_qwant.log
-                if [ "$verbose" = "Activé" ]; then echo "La page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web";fi
+                if [ "$verbose" = "Activé" ]; then echo -e "\033[33mLa page PHP de sauvegarde des liens à été créé, pensez à la copier sur votre serveur web\033[00m";fi
 
 	Stop_script
 	fi	
-if [ "$verbose" = "Activé" ]; then echo "Vérification de l'existance de la page PHP de sauvegarde des liens.......Fait"; fi
+if [ "$verbose" = "Activé" ]; then echo -e "Vérification de l'existance de la page PHP de sauvegarde des liens.......\033[32mFait\033[00m"; fi
 }
 
 ####################
@@ -603,9 +603,9 @@ do
 	if [ ${nbline[$cpt_user]} -ge ${multi_nbliens_par_mail[$cpt_user]} ] || [ "$mail" = "Activé" ] || [ "$fichier" = "Activé" ]
 	then
 		Creat_finaldoc
-		rm ${multi_pseudo[$cpt_user]}.*.data>>alert_qwant.log 2>&1
+		rm ${multi_pseudo[$cpt_user]}*.data>>alert_qwant.log 2>&1
 	fi
-	rm  *.tmp *.mef >>alert_qwant.log 2>&1
+	rm *.mef >>alert_qwant.log 2>&1
 	((cpt_user++))
 done
 
