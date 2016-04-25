@@ -440,11 +440,12 @@ Check_howmany_links()
 #Génération du document final
 Creat_finaldoc()
 {
-	if [ "$verbose" = "Activé" ]; then echo -e "Création du document final.......en cours"; fi
+	if [ "$verbose" = "Activé" ]; then echo -e "\033[33mCréation du document final.......en cours\033[00m"; fi
 	BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
         BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
 	BDD_veille_MEF_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef"
 	BDD_veille_MEFtmp_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef.tmp"
+	filename_keywords_list_tmp="${multi_pseudo[$cpt_user]}""_""mots_clefs.tmp"
 			
 	#Mise en forme du MEF
         echo '<!doctype html>' >> $BDD_veille_MEF_by_user
