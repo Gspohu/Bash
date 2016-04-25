@@ -120,7 +120,7 @@ Check_sysfiles()
 		echo "#<0> Pseudo0 : 2 : 3 : 4 : 5 : 6 : 7 : 8 <" >> alert_qwant.conf
 		echo "#<1> Aymeric : fr : 4 : 50 : mail : adresse@mail.eu : /home/alertqwant/ : Oui <" >> alert_qwant.conf
 	        echo "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer." >> alert_qwant.log
-		if [ "$verbose" = "Activé" ]; then echo -e "Création du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer."; fi
+		if [ "$verbose" = "Activé" ]; then echo -e "\033[33mCréation du fichier de configuration, alert_qwant.conf, avec les paramètres de bases. Pensez à l'éditer.\033[00m"; fi
 	        Stop_script
 	fi
 
@@ -349,7 +349,7 @@ Check_BBD_files()
 		if [ ! -f "$BDD_veille_mail_by_user" ]
 		then
                 	touch $BDD_veille_mail_by_user >> alert_qwant.log 2>&1
-			if [ "$verbose" = "Activé" ]; then echo -e "Création du fichier $BDD_veille_mail_by_user"; fi
+			if [ "$verbose" = "Activé" ]; then echo -e "\033[33mCréation du fichier $BDD_veille_mail_by_user\033[00m"; fi
 			echo "Création du fichier $BDD_veille_mail_by_user"  >> alert_qwant.log
 		fi
 		if [ ! -f "$BDD_veille_data_by_user" ]
