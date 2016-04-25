@@ -68,7 +68,7 @@ Read_option()
 			echo "Option envoi vers un fichier sans taille limite activé" >> alert_qwant.log
                         if [ "$verbose" = "Activé" ]; then echo -e "Option envoi vers un fichier sans taille limite activé"; fi
 		else
-                	if [ "$verbose" = "Activé" ]; then echo -e "Erreur : Option non reconnue"; fi
+                	if [ "$verbose" = "Activé" ]; then echo -e "\033[31mErreur : Option non reconnue\033[00m"; fi
 			echo 'Erreur : Option non reconnue' >> alert_qwant.log
         	fi
 if [ "$verbose" = "Activé" ]; then echo -e "Lecture des options.......\033[32mFait\033[00m"; fi
@@ -88,7 +88,7 @@ Check_WhereamI()
 	# Vérification de l'existence du script alert_qwant.sh
 	if [ "$ou_suis_je" != "/home/alertqwant" ]
 	then
-        	echo "Erreur critique : Le script est mal placé. Il doit être placé à la racine du home de l\'utilisateur alertqwant"
+        	echo "\033[31mErreur critique : Le script est mal placé. Il doit être placé à la racine du home de l\'utilisateur alertqwant\033[00m"
         	echo "Erreur critique : Le script est mal placé. Il doit être placé à la racine du home de l\'utilisateur alertqwant" >> alert_qwant.log
 		Stop_script
 	fi
@@ -172,7 +172,7 @@ Check_keywords_lists()
 			echo "Qwant" >> $filename_keywords_list
 
         	        echo "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list" >> alert_qwant.log
-	                if [ "$verbose" = "Activé" ]; then echo -e "Erreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list"; fi
+	                if [ "$verbose" = "Activé" ]; then echo -e "\033[31mErreur : La liste de mots clefs pour l'utilisateur ${multi_pseudo[$cpt_user]} n'existe pas elle a été créée automatiquement. Pensez à éditer le fichier $filename_keywords_list \033[00m"; fi
 			Stop="O"
 		else
 			cat $filename_keywords_list | sed s/' '/'+'/g > $filename_keywords_list_tmp
@@ -257,7 +257,7 @@ Check_read_conffile()
 				$choix_mail_ou_fichier="mail"
 			else
 				echo "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier de l'utilisateur ${multi_pseudo[$cpt_user]}" >> alert_qwant.log
-        			if [ "$verbose" = "Activé" ]; then echo -e "Erreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier de l'utilisateur ${multi_pseudo[$cpt_user]}"; fi
+        			if [ "$verbose" = "Activé" ]; then echo -e "\033[32mErreur critique : le fichier de configuration est mal complèté dans la partie choix mail ou fichier de l'utilisateur ${multi_pseudo[$cpt_user]} \033[00m"; fi
         			Stop_script
 			fi
 		fi
@@ -413,26 +413,26 @@ Search_links()
 #Boucle pour le comptage des lignes de la base de donnée de liens
 Check_howmany_links()
 {
-		cpt_user=0
-		while [ $cpt_user -lt $nbuser ]
-		do
-			BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
-			filename_nbline_by_user="${multi_pseudo[$cpt_user]}""_""nbline.tmp"
-			nbline[$cpt_user]=0			
+	cpt_user=0
+	while [ $cpt_user -lt $nbuser ]
+	do
+		BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
+		filename_nbline_by_user="${multi_pseudo[$cpt_user]}""_""nbline.tmp"
+		nbline[$cpt_user]=0			
 
-                	cat $BDD_veille_data_by_user | while read line
-                	do
-                        	((nbline[$cpt_user]++))
-                        	echo "${nbline[$cpt_user]}" > $filename_nbline_by_user
-                	done
+               	cat $BDD_veille_data_by_user | while read line
+               	do
+                       	((nbline[$cpt_user]++))
+                       	echo "${nbline[$cpt_user]}" > $filename_nbline_by_user
+               	done
 
-                	#Test de la présence du fichier user_nbline.tmp
-	                if [ -f "$filename_nbline_by_user" ] 
-        	        then
-                        	nbline[$cpt_user]=$(cat $filename_nbline_by_user)
-                	fi
+               	#Test de la présence du fichier user_nbline.tmp
+	        if [ -f "$filename_nbline_by_user" ] 
+                then
+                       	nbline[$cpt_user]=$(cat $filename_nbline_by_user)
+               	fi
                 ((cpt_user++))
-                done
+	done
 
 	if [ "$verbose" = "Activé" ]; then echo -e "Compte du nombre de liens.......\033[32mFait\033[00m"; fi
 }
@@ -441,39 +441,38 @@ Check_howmany_links()
 Creat_finaldoc()
 {
 	if [ "$verbose" = "Activé" ]; then echo -e "Création du document final.......en cours"; fi
-	cpt_user=0
-		BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
-                BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
-		BDD_veille_MEF_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef"
-		BDD_veille_MEFtmp_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef.tmp"
+	BDD_veille_mail_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mail"
+        BDD_veille_data_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.data"
+	BDD_veille_MEF_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef"
+	BDD_veille_MEFtmp_by_user="${multi_pseudo[$cpt_user]}""_""BDD_veille.mef.tmp"
 			
-		#Mise en forme du MEF
-                echo '<!doctype html>' >> $BDD_veille_MEF_by_user
-       	        echo '<html lang="fr">' >> $BDD_veille_MEF_by_user
-               	echo '<head>' >> $BDD_veille_MEF_by_user
-      	    	echo '<meta charset="utf-8">' >> $BDD_veille_MEF_by_user
-    		echo '<title>[Alert Qwant] Newsletter</title>' >> $BDD_veille_MEF_by_user
-       	    	echo '<link rel="stylesheet" href="style.css">' >> $BDD_veille_MEF_by_user
-       		echo '</head>' >> $BDD_veille_MEF_by_user
-       		echo '<body>' >> $BDD_veille_MEF_by_user
-       	 	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> $BDD_veille_MEF_by_user
-      	    	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> $BDD_veille_MEF_by_user
-		echo "<br><p align="left"><font color="black" >Bonjour ${multi_pseudo[$cpt_user]},</font></p><br/>" >> $BDD_veille_MEF_by_user
+	#Mise en forme du MEF
+        echo '<!doctype html>' >> $BDD_veille_MEF_by_user
+	echo '<html lang="fr">' >> $BDD_veille_MEF_by_user
+        echo '<head>' >> $BDD_veille_MEF_by_user
+      	echo '<meta charset="utf-8">' >> $BDD_veille_MEF_by_user
+    	echo '<title>[Alert Qwant] Newsletter</title>' >> $BDD_veille_MEF_by_user
+       	echo '<link rel="stylesheet" href="style.css">' >> $BDD_veille_MEF_by_user
+       	echo '</head>' >> $BDD_veille_MEF_by_user
+       	echo '<body>' >> $BDD_veille_MEF_by_user
+       	echo '<img src="https://raw.githubusercontent.com/Gspohu/Bash/master/alert_qwant/QwantandBash.png" width="250" align="left" alt="Logo" /><br/><br/><br/>' >> $BDD_veille_MEF_by_user
+      	echo "<br><p align="right"><font color="grey" >Newsletter du $jour_heure</font></p><br/>" >> $BDD_veille_MEF_by_user
+	echo "<br><p align="left"><font color="black" >Bonjour ${multi_pseudo[$cpt_user]},</font></p><br/>" >> $BDD_veille_MEF_by_user
 
-		cat $BDD_veille_data_by_user | sort >> $BDD_veille_mail_by_user
-                poids_BDD_mail=$(ls -lh $BDD_veille_mail_by_user | cut -d ' ' -f5)
+	cat $BDD_veille_data_by_user | sort >> $BDD_veille_mail_by_user
+        poids_BDD_mail=$(ls -lh $BDD_veille_mail_by_user | cut -d ' ' -f5)
 
-       	        # Boucle de concaténation des résultats dans le fichier mis en forme
-		cat $filename_keywords_list_tmp | while read line
-               	do
-                       	mot_clef=$(echo $line | sed s/'+'/' '/g)
-                       	vide=$(cat "${multi_pseudo[$cpt_user]}""_""$line"".data")
-                       	elem_comparaison="<br><br><b>""$mot_clef""<b><br>"
-                       	if [ "$vide" != "$elem_comparaison" ]
-                       	then
-                       	        cat "${multi_pseudo[$cpt_user]}""_""$line"".data" >> $BDD_veille_MEF_by_user
-                       		echo "" >> $BDD_veille_MEF_by_user
-                       	fi
+       	# Boucle de concaténation des résultats dans le fichier mis en forme
+	cat $filename_keywords_list_tmp | while read line
+        do
+               	mot_clef=$(echo $line | sed s/'+'/' '/g)
+               	vide=$(cat "${multi_pseudo[$cpt_user]}""_""$line"".data")
+               	elem_comparaison="<br><br><b>""$mot_clef""<b><br>"
+               	if [ "$vide" != "$elem_comparaison" ]
+              	then
+               	        cat "${multi_pseudo[$cpt_user]}""_""$line"".data" >> $BDD_veille_MEF_by_user
+              		echo "" >> $BDD_veille_MEF_by_user
+              	fi
                	done
 			
 		if [ "${multi_enable_save[$cpt_user]}" = "Oui" ]
